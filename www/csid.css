@@ -1,0 +1,255 @@
+body {
+  background: white;
+  text: black;
+  font-family: arial, sans-serif;
+  max-width: 1000px;
+}
+div#body-container {
+  overflow: hidden;
+}
+table {
+  border-collapse: collapse;
+  max-width: 800px;
+  float: left;
+}
+div#selector {
+  padding-bottom: 10px;
+  margin-left: 10px;
+  width: 140px;
+  float: right;
+}
+table tr {
+  vertical-align: top;
+}
+p {
+}
+table td {
+  padding: 0px;
+  vertical-align: middle;
+}
+img#logo {
+  padding-top: 10px;
+  margin-left: -10px;
+  cursor: pointer;
+  display: block;
+}
+a {
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+}
+table tr {
+  cursor: pointer;
+  background: -ms-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
+  background: -moz-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
+  background: -o-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F0F0F0), color-stop(1, #E0E0E0));
+  background: -webkit-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
+  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
+  height: 45px;
+}
+table tr.checked {
+  vertical-align: middle;
+  cursor: pointer;
+  background: -ms-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: -moz-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: -o-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #80F080), color-stop(1, #80E080));
+  background: -webkit-linear-gradient(top, #80F080 0%, #80E080 100%);
+  background: linear-gradient(to bottom, #80F080 0%, #80E080 100%);
+}
+td > a {
+  width: 100%;
+  display: inline-block;
+  padding: 3px;
+  padding-left: 10px;
+  margin: 0px;
+}
+tr.date {
+  background: #800000;
+  color: white;
+  height: 30px;
+}
+tr.date td {
+  text-align: right;
+  padding-right: 8px;
+}
+.invisible {
+  display: none;
+}
+tr td:first-child {
+  padding-right: 10px;
+}
+tr td:nth-child(2) {
+  white-space: nowrap;
+  padding-left: 10px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  min-width: 100px;
+}
+span.venue {
+  padding-right: 10px;
+  white-space: nowrap;
+  display: block;
+}
+td.show {
+  padding-left: 15px;
+  padding-right: 10px;
+  vertical-align: middle;
+}
+div.export {
+  padding-top: 10px;
+  margin-left: 3px;
+}
+div.export a {
+  cursor: pointer;
+}
+
+/* Center everything */
+html, body {
+  height: 100%;
+}
+html {
+  display: table;
+  margin: auto;
+}
+body {
+  display: table-cell;
+}
+span.venue-name {
+  cursor: pointer;
+  font-weight: bold;
+}
+div.explanation {
+  margin-bottom: 10px;
+}
+.lightbox {
+  background: #a0a0a0;
+  color: black;
+  padding: 10px;
+}
+
+div#small-heading {
+  display: none;
+}
+
+@media only screen and (max-width: 5000px) {
+  /* Style adjustments for small screens. */
+  div#large-heading {
+    display: none;
+  }
+  div#small-heading {
+    display: block;
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+    background: linear-gradient(to bottom, #3030a0 0%, #100150 100%);
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    vertical-align: middle;
+  }
+  div#small-heading a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  div#small-heading img {
+    position: absolute;
+    top: -2px;
+    left: 10px;
+  }
+  tr td:nth-child(3) {
+    display: none;
+  }
+  tr td:nth-child(2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70px;
+    min-width: 70px;
+    padding-right: 10px;
+  }
+  div#selector {
+    display: none;
+  }
+  div.outer-venue-logo {
+    position: relative;
+    height: 200px;
+    background: white;
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+  div.outer-venue-logo img {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  img#small-menu {
+    padding-top: 10px;
+  }
+}
+
+.event-lightbox {
+  padding-top: 0px;
+  padding-bottom: 35px;
+  text-align: center;
+  background: #105010;
+}
+.event-lightbox a {
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  color: white;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: block;
+}
+.event-lightbox button {
+  display: block;
+  width: 100%;
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border: 0px;
+  color: white;
+  font: inherit;
+  font-weight: bold;
+  font-family: arial, sans-serif;
+}
+.event-lightbox div.venue {
+  display: block;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border: 0px;
+  color: white;
+  font-weight: bold;
+  font-family: arial, sans-serif;
+  font-size: inherit;
+}
+.event-lightbox div.venue-top {
+  display: block;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border: 0px;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(to bottom, #808080 0%, #404040 100%);
+}
+.event-lightbox div.checked {
+  background: linear-gradient(to bottom, #40a040 0%, #105010 100%);
+}
+.event-lightbox div.unchecked {
+  background: linear-gradient(to bottom, #a04040 0%, #501010 100%);
+}
+td.thumb-logo {
+  text-align: center;
+  vertical-align: middle;
+}
