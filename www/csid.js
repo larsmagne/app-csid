@@ -38,6 +38,12 @@ function addNavigation() {
 
   $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
+  if (phoneGap) {
+    $("table").css({
+      width: screen.width
+    });
+  }
+  
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
     if (! name)
@@ -56,15 +62,6 @@ function addNavigation() {
       }
       return true;
     });
-
-    if (phoneGap) {
-      $(node).children("td").first().css({
-	minWidth: (screen.width - 80) + "px",
-	maxWidth: (screen.width - 80) + "px",
-	textOverflow: "hidden",
-	overflow: "hidden"
-      });
-    }
 
     if (mobilep) {
       $(node).children("td").last().bind("click", function() {
