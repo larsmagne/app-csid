@@ -36,6 +36,12 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
+  if (phoneGap) {
+    $("a").click(function() {
+      window.open(this.href, "_system", "location=no");
+    });
+  }
+  
   $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("tr").each(function(key, node) {
@@ -412,7 +418,7 @@ function actionEventMenu(node, venue) {
   });
   $("#event-link").bind("click", function() {
     $.colorbox.close();
-    document.location.href = this.href;
+    window.open(this.href, "_system", "location=no");
     return false;
   });
   $("#cboxLoadedContent").bind("click", function() {
