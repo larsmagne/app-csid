@@ -593,6 +593,8 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function addScrollActions() {
+  if (device.platform == "iOS")
+    return;
   if (! phoneGap)
     return;
   removeScrollActions();
