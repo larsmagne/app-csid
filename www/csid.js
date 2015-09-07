@@ -157,7 +157,7 @@ function addNavigation() {
       return true;
     });
     if (phoneGap) {
-      $(".small-heading").find("a").bind("click", function() {
+      $("#small-heading").find("a").bind("click", function() {
 	window.open(this.href, "_system", "location=no");
       });
       setHardWidths();
