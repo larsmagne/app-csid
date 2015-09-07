@@ -36,12 +36,6 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  if (phoneGap) {
-    $("a").bind("click", function() {
-      window.open(this.href, "_system", "location=no");
-    });
-  }
-  
   $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
   $("tr").each(function(key, node) {
@@ -65,7 +59,10 @@ function addNavigation() {
 
     if (phoneGap) {
       $(node).children("td").first().css({
-	width: window.innerWidth - 70 + "px"
+	minWidth: window.innerWidth - 70 + "px",
+	maxWidth: window.innerWidth - 70 + "px",
+	textOverflow: "hidden",
+	overflow: "hidden"
       });
     }
 
@@ -166,6 +163,11 @@ function addNavigation() {
       $.colorbox.close();
       return true;
     });
+    if (phoneGap) {
+      $(".small-heading").find("a").bind("click", function() {
+	window.open(this.href, "_system", "location=no");
+      });
+    }
   }
 }
 
@@ -407,7 +409,7 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><div id='event-link' data='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
+  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
 	      width: "100%",
 	      closeButton: false,
 	      transition: "none",
