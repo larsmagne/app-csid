@@ -38,12 +38,6 @@ function addNavigation() {
 
   $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
-  if (phoneGap) {
-    $("table").css({
-      width: screen.width
-    });
-  }
-  
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
     if (! name)
@@ -62,7 +56,7 @@ function addNavigation() {
       }
       return true;
     });
-
+    
     if (mobilep) {
       $(node).children("td").last().bind("click", function() {
 	actionVenueMenu(name);
@@ -158,12 +152,15 @@ function addNavigation() {
     loadLogos(mobilep);
     $(window).on("orientationchange", function() {
       $.colorbox.close();
+      if (phoneGap)
+	setHardWidths();
       return true;
     });
     if (phoneGap) {
       $(".small-heading").find("a").bind("click", function() {
 	window.open(this.href, "_system", "location=no");
       });
+      setHardWidths();
     }
   }
 }
@@ -612,3 +609,16 @@ function removeScrollActions() {
   $(window).off("touchmove");
   $(window).off("scroll");
 }
+
+function setHardWidths() {
+  var width = $(window).width() - 100;
+  $("tr").each(function(key, node) {
+    $(node).children("td").first().css({
+      minWidth: width + "px",
+      maxWidth: width + "px",
+      textOverflow: "hidden",
+      overflow: "hidden"
+    });
+  });
+}
+
