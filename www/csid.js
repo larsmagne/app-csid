@@ -59,8 +59,8 @@ function addNavigation() {
 
     if (phoneGap) {
       $(node).children("td").first().css({
-	minWidth: window.innerWidth - 70 + "px",
-	maxWidth: window.innerWidth - 70 + "px",
+	minWidth: "200px",
+	maxWidth: "200px",
 	textOverflow: "hidden",
 	overflow: "hidden"
       });
