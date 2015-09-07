@@ -31,6 +31,8 @@
     <icon src="www/csid-icon.png" platform="android" density="xhdpi" />
     <icon src="www/csid-icon.png" platform="ios" width="512" height="512" />
 
+    <gap:plugin name="org.apache.cordova.splashscreen" />
+    <preference name="SplashScreen" value="screen"/>
     <!-- iPhone / iPod Touch  -->
     <icon src="icon-60.png" gap:platform="ios" width="60" height="60" />
     <icon src="icon-60x2.png" gap:platform="ios" width="120" height="120" />
