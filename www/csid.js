@@ -63,6 +63,12 @@ function addNavigation() {
       return true;
     });
 
+    if (phoneGap) {
+      $(node).children("td").first().css({
+	width: window.innerWidth - 70 + "px"
+      });
+    }
+
     if (mobilep) {
       $(node).children("td").last().bind("click", function() {
 	actionVenueMenu(name);
