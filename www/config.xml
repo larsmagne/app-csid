@@ -23,7 +23,7 @@
       <param name="ios-package" value="CDVInAppBrowser" />
     </feature>
 
-    <gap:plugin name="org.apache.cordova.statusbar">
+    <gap:plugin name="org.apache.cordova.statusbar" />
     <preference name="StatusBarOverlaysWebView" value="false"/>
     <preference name="StatusBarBackgroundColor" value="#000000"/>
     <preference name="StatusBarStyle" value="lightcontent" />
