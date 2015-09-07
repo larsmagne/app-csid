@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="0.0.13" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="0.0.15" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Concerts in Oslo</name>
     <description>
         Concerts in Oslo
@@ -45,12 +45,16 @@
     <icon src="icon-40.png" gap:platform="ios" width="40" height="40" />
     <icon src="icon-40x2.png" gap:platform="ios" width="80" height="80" />
 
+    <gap:splash src="splash.png" />
+    
     <!-- iPhone and iPod touch -->
     <gap:splash src="splash-320.png" gap:platform="ios" width="320" height="480" />
     <gap:splash src="splash-320x2.png" gap:platform="ios" width="640" height="960" />
     <!-- iPhone 5 / iPod Touch (5th Generation) -->
     <gap:splash src="splash-640.png" gap:platform="ios" width="640" height="1136" />
-    <!-- iPad -->
+    <gap:splash src="splash-568.png" gap:platform="ios" width="568" height="320" />
+    <gap:splash src="splash-320x568.png" gap:platform="ios" width="320" height="568" />
+      <!-- iPad -->
     <gap:splash src="splash-768.png" gap:platform="ios" width="768" height="1024" />
     <gap:splash src="splash-768x2" gap:platform="ios" width="1536" height="2048" />
     <!-- Retina iPad -->
