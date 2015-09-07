@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="0.0.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="0.0.13" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Concerts in Oslo</name>
     <description>
         Concerts in Oslo
@@ -8,20 +8,6 @@
         Lars Magne Ingebrigtsen
     </author>
     <preference name="show-splash-screen-spinner" value="false" />
-    <gap:splash src="splash.png" />
-    <gap:splash src="splash.png" gap:platform="ios" width="320" height="480" />
-    <gap:splash src="splash.png" gap:platform="ios" width="640" height="960" />
-
-    <!-- iPhone 5 / iPod Touch (5th Generation) -->
-    <gap:splash src="splash.png" gap:platform="ios" width="640" height="1136" />
-    
-    <!-- iPad -->
-    <gap:splash src="splash.png" gap:platform="ios" width="768" height="1024" />
-    <gap:splash src="splash.png" gap:platform="ios" width="1024" height="768" />
-    
-    <!-- Retina iPad -->
-    <gap:splash src="splash.png" gap:platform="ios" width="1536" height="2048" />
-    <gap:splash src="splash.png" gap:platform="ios" width="2048" height="1536" />
 
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" version="1" />
@@ -45,6 +31,29 @@
     <icon src="www/csid-icon.png" platform="android" density="hdpi" />
     <icon src="www/csid-icon.png" platform="android" density="xhdpi" />
     <icon src="www/csid-icon.png" platform="ios" width="512" height="512" />
+
+    <!-- iPhone / iPod Touch  -->
     <icon src="icon-60.png" gap:platform="ios" width="60" height="60" />
     <icon src="icon-60x2.png" gap:platform="ios" width="120" height="120" />
+    <!-- iPad -->
+    <icon src="icon-76.png" gap:platform="ios" width="76" height="76" />
+    <icon src="icon-76@x2.png" gap:platform="ios" width="152" height="152" />
+    <!-- Settings Icon -->
+    <icon src="icon-29.png" gap:platform="ios" width="29" height="29" />
+    <icon src="icon-29x2.png" gap:platform="ios" width="58" height="58" />
+    <!-- Spotlight Icon -->
+    <icon src="icon-40.png" gap:platform="ios" width="40" height="40" />
+    <icon src="icon-40x2.png" gap:platform="ios" width="80" height="80" />
+
+    <!-- iPhone and iPod touch -->
+    <gap:splash src="splash-320.png" gap:platform="ios" width="320" height="480" />
+    <gap:splash src="splash-320x2.png" gap:platform="ios" width="640" height="960" />
+    <!-- iPhone 5 / iPod Touch (5th Generation) -->
+    <gap:splash src="splash-640.png" gap:platform="ios" width="640" height="1136" />
+    <!-- iPad -->
+    <gap:splash src="splash-768.png" gap:platform="ios" width="768" height="1024" />
+    <gap:splash src="splash-768x2" gap:platform="ios" width="1536" height="2048" />
+    <!-- Retina iPad -->
+    <gap:splash src="splash-1024.png" gap:platform="ios" width="1024" height="768" />
+    <gap:splash src="splash-1024x2.png" gap:platform="ios" width="2048" height="1536" />
 </widget>
