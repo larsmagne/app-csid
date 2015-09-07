@@ -159,6 +159,7 @@ function addNavigation() {
     if (phoneGap) {
       $("#small-heading").find("a").bind("click", function() {
 	window.open(this.href, "_system", "location=no");
+	return false;
       });
       setHardWidths();
       StatusBar.overlaysWebView(false);
