@@ -583,6 +583,7 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function addScrollActions() {
+  return;
   if (! phoneGap)
     return;
   removeScrollActions();
