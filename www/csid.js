@@ -161,6 +161,7 @@ function addNavigation() {
 	window.open(this.href, "_system", "location=no");
       });
       setHardWidths();
+      StatusBar.overlaysWebView(false);
     }
   }
 }
