@@ -29,10 +29,6 @@ function splash() {
     img.style.position = "absolute";
     img.style.zIndex = -1;
     document.body.appendChild(img);
-    var currentPos = $(".front-logo").position().top;
-    $(".front-logo").animate({
-      top: "+=" + (height - currentPos - 80 - $(".front-logo").height()) + "px"
-    });
     loadData();
   };
   img.src = "splash/splash" + Math.floor((Math.random() * 4 + 1)) + ".jpg";
