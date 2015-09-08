@@ -377,7 +377,7 @@ function exportCalendar() {
       var venue = $line.find("td").eq(1).text();
       var band = $line.find("td").first().text();
       var start = date + "T200000";
-      var end = date + "T230000";
+      var end = date + "T210000";
       cal += "BEGIN:VEVENT\nUID:event-" + elem + "@csid.no\n";
       cal += "DTSTAMP:" + start + "Z\n";
       cal += "ORGANIZER;CN=" + venue + ":MAILTO:csid@example.com\n";
@@ -422,7 +422,10 @@ function actionEventMenu(node, venue) {
   });
   $("#event-link").bind("click", function() {
     $.colorbox.close();
-    window.open(this.href, "_system", "location=no");
+    if (phoneGap && device.platform == "iOS")
+      window.open(this.href, "_system", "location=no");
+    else
+      document.location.href = this.href;
     return false;
   });
   $("#cboxLoadedContent").bind("click", function() {
@@ -593,9 +596,7 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function addScrollActions() {
-  if (device.platform == "iOS")
-    return;
-  if (! phoneGap)
+  if (! phoneGap || device.platform == "iOS")
     return;
   removeScrollActions();
   $(window).on("touchmove", function() {
