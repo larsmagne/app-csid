@@ -3,6 +3,13 @@ phoneGap = true;
 $.support.cors = true;
 
 function splash() {
+  document.addEventListener("backbutton", function() {
+    navigator.app.exitApp();
+  }, false);
+
+  document.addEventListener("resume", function() {
+  }, false);
+
   var img = new Image();
   img.onload = function() {
     var width = window.innerWidth;
@@ -61,7 +68,7 @@ function loadData() {
     );
   } else {
     $.ajax({
-      url: "http://csid.no/index.html",
+      url: "http://csid.no/index.html?ts=" + Date.now(),
       dataType: "text",
       success: function(data) {
 	var div = document.createElement("div");
@@ -71,6 +78,7 @@ function loadData() {
 	document.body.innerHTML = "";
 	document.body.appendChild(div);
 	addNavigation();
+	saveCache(data);
       },
       error: function(error) {
 	console.log(error);
@@ -80,9 +88,10 @@ function loadData() {
 }
 
 function displayCache(text) {
-  alert("success");
   var div = document.createElement("div");
   div.innerHTML = text;
+  $(div).find("script").remove();
+  $(div).find("head").remove();
   document.body.innerHTML = "";
   document.body.appendChild(div);
   addNavigation();
@@ -94,7 +103,6 @@ function displayCache(text) {
 }
 
 function displayCacheFailure() {
-  alert("failure");
   $.colorbox({html: "<div class='venue-top'>Device offline and no cache available</div><a href='#' id='csid-close'>Close</a>",
 	      width: $(window).width() + "px",
 	      closeButton: false,
@@ -106,4 +114,30 @@ function displayCacheFailure() {
   });
 }
 
-splash();
+function saveCache(data) {
+  window.requestFileSystem(
+    LocalFileSystem.PERSISTENT, 0,
+    function(fileSystem) {
+      fileSystem.root.getFile(
+	"cache.html",
+	{create: true,
+	 exclusive: false},
+	function(fileEntry) {
+          fileEntry.createWriter(
+	    function(writer) {
+              writer.onwriteend = function(evt) {
+              };
+              writer.write(data);
+	    },
+	    fail);
+	},
+	fail);
+    },
+    fail);
+}
+
+function fail() {
+  alert("failed");
+}
+
+document.addEventListener("deviceready", splash, false);
