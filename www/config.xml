@@ -31,6 +31,8 @@
     </feature>
 
     <gap:plugin name="org.apache.cordova.device" />
+    <gap:plugin name="org.apache.cordova.network-information" />
+    <gap:plugin name="org.apache.cordova.file" />
 
     <feature name="Device">
       <param name="ios-package" value="CDVDevice" onload="true" />
