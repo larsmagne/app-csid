@@ -19,9 +19,7 @@
     <gap:plugin name="org.apache.cordova.inappbrowser" />
     <gap:plugin name="org.apache.cordova.geolocation" />
     
-    <feature name="InAppBrowser">
-      <param name="ios-package" value="CDVInAppBrowser" />
-    </feature>
+    <feature name="InAppBrowser"> <param name="ios-package" value="CDVInAppBrowser" /> </feature>
 
     <gap:plugin name="org.apache.cordova.statusbar" />
     <preference name="StatusBarOverlaysWebView" value="false" />
