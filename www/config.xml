@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="0.0.33"
+<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="0.0.34"
 	xmlns="http://www.w3.org/ns/widgets"
 	xmlns:cdv="http://cordova.apache.org/ns/1.0"
 	xmlns:gap="http://phonegap.com/ns/1.0">
@@ -52,11 +52,11 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <icon src="csid-icon.png" />
-    <icon src="csid-icon.png" platform="android" density="ldpi" />
-    <icon src="csid-icon.png" platform="android" density="mdpi" />
-    <icon src="csid-icon.png" platform="android" density="hdpi" />
-    <icon src="csid-icon.png" platform="android" density="xhdpi" />
+    <icon src="www/csid-icon.png" />
+    <icon src="www/csid-icon.png" platform="android" density="ldpi" />
+    <icon src="www/csid-icon.png" platform="android" density="mdpi" />
+    <icon src="www/csid-icon.png" platform="android" density="hdpi" />
+    <icon src="www/csid-icon.png" platform="android" density="xhdpi" />
 
     <icon src="csid-icon.png" platform="ios" width="512" height="512" />
     <icon src="csid-icon72.png" platform="ios" width="72" height="72" />
