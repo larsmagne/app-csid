@@ -50,7 +50,7 @@ function loadData() {
       LocalFileSystem.PERSISTENT, 0,
       function(fileSystem) {
         fileSystem.root.getFile(
-	  "cache.html", null,
+	  "csid-cache.html", null,
 	  function(fileEntry) {
 	    fileEntry.file(
 	      function(file) {
@@ -119,7 +119,7 @@ function saveCache(data) {
     LocalFileSystem.PERSISTENT, 0,
     function(fileSystem) {
       fileSystem.root.getFile(
-	"cache.html",
+	"csid-cache.html",
 	{create: true,
 	 exclusive: false},
 	function(fileEntry) {
