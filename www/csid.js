@@ -144,7 +144,7 @@ function addNavigation() {
 		       });
 
   $('#small-menu').bind("click", function(e) {
-    showVenueChooser();
+    miscMenu();
     return false;
   });
 
@@ -160,10 +160,6 @@ function addNavigation() {
       return true;
     });
     if (phoneGap) {
-      $("#small-heading").find("a").bind("click", function() {
-	window.open(this.href, "_system", "location=no");
-	return false;
-      });
       setHardWidths();
       StatusBar.overlaysWebView(false);
     }
@@ -648,3 +644,43 @@ function setHardWidths() {
   });
 }
 
+function miscMenu() {
+  $.colorbox({html: "<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
+	      width: $(window).width() + "px",
+	      closeButton: false,
+	      transition: "none",
+	      height: "100%",
+	      className: "event-lightbox"});
+  $("#csid-close").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+  $("#cboxLoadedContent").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+  $("#show-venues").bind("click", function() {
+    showVenueChooser();
+    return false;
+  });
+  $("#about").bind("click", function() {
+    $.colorbox.close();
+    var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
+    if (phoneGap && device.platform == "iOS")
+      window.open(url, "_system", "location=no");
+    else
+      document.location.href = url;
+    return false;
+  });
+  $("#export-calendar").hide();
+  $("#export-calendar").bind("click", function() {
+    $.colorbox.close();
+    var shows = getSettings("shows");
+    if (shows.length < 1)
+      alert("No events to export");
+    else 
+      exportCalendar();
+    return false;
+  });
+  addScrollActions();
+}
