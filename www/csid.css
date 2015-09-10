@@ -206,6 +206,17 @@ div#small-heading {
   img#small-menu {
     padding-top: 10px;
   }
+
+  div.event-text {
+    background: white;
+    text-align: center;
+    display: block;
+    font-weight: bold;
+    width: 100%;
+  }
+  div.event-text div {
+    padding: 20px;
+  }
 }
 
 .event-lightbox {

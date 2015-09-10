@@ -191,7 +191,8 @@ function addVenue(name, deniedVenues) {
   });
 }
 
-function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent) {
+function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
+		  onlyShowsArray) {
   var venues = [];
   var i = 0;
   var onlyShows = window.location.href.match("shows=([0-9,]+)");
@@ -200,7 +201,9 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent) {
   var blankTable = true;
 
   // We've gotten an URL with a show list from somebody.
-  if (onlyShows)
+  if (onlyShowsArray)
+    onlyShows = onlyShowsArray;
+  else if (onlyShows)
     onlyShows = onlyShows[1].split(",");
 
   $("input[type=checkbox]").each(function(key, node) {
@@ -410,7 +413,12 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
-  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>");
+  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
+	   fixName(venue) + ".png'></div><div class='event-text'><div>" +
+	   $(node).find("a")[0].innerHTML +
+	   "</div></div><a id='event-link' href='" + link +
+	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
+	   type + "</a><a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     $.colorbox.close();
@@ -631,10 +639,16 @@ function miscMenu() {
   var restoreString = "";
   if (limitedDisplay)
     restoreString = "<a href='#' id='restore'>Restore Events</a>";
+  var goingString = "";
+  $.map(getSettings("shows"), function(id) {
+    if ($("#event-" + id).length)
+      goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
+  });
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
+	   goingString +
 	   "<a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
   $("#show-venues").bind("click", function() {
     showVenueChooser();
@@ -679,6 +693,12 @@ function miscMenu() {
   });
   $("#search").bind("click", function() {
     searchEvents();
+    return false;
+  });
+  $("#going").bind("click", function() {
+    $.colorbox.close();
+    limitedDisplay = true;
+    hideShow(false, false, false, getSettings("shows"));
     return false;
   });
   $("#restore").bind("click", function() {
