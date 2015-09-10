@@ -1,6 +1,7 @@
 var reveal = false;
 var phoneGap = false;
 var sortOrder = "date";
+var savedTable = false;
 
 function getSettings(name) {
   var settings = $.cookie(name);
@@ -76,7 +77,7 @@ function addNavigation() {
 	return true;
       });
     }
-    
+
     var id = node.id.replace("event-", "");
     $(node).append("<td class=show><input type=checkbox id='show-" + id + 
 		   "' " + 
@@ -165,6 +166,8 @@ function addNavigation() {
       StatusBar.overlaysWebView(false);
     }
   }
+  if (! savedTable)
+    savedTable = $("table").clone({withDataAndEvents: true});
 }
 
 function addVenue(name, deniedVenues) {
@@ -413,15 +416,29 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
+  var exportString = "";
+  if (phoneGap)
+    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a><a href='#' id='share-event'>Share Event</a>";
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
 	   fixName(venue) + ".png'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
 	   "</div></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
-	   type + "</a><a href='#' id='csid-close'>Close</a>");
+	   type + "</a>" + exportString +
+	   "<a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     $.colorbox.close();
+    return false;
+  });
+  $("#export-event").bind("click", function() {
+    $.colorbox.close();
+    exportEvent(id);
+    return false;
+  });
+  $("#share-event").bind("click", function() {
+    $.colorbox.close();
+    shareEvent(id);
     return false;
   });
   $("#event-link").bind("click", function() {
@@ -629,7 +646,6 @@ function setHardWidths() {
   });
 }
 
-var savedTable = false;
 var limitedDisplay = false;
 
 function miscMenu() {
@@ -644,7 +660,7 @@ function miscMenu() {
     if ($("#event-" + id).length)
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
-  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
@@ -676,22 +692,21 @@ function miscMenu() {
   $("#sort-method").bind("click", function() {
     $.colorbox.close();
     if (sortOrder == "date") {
-      savedTable = $("table")[0].cloneNode(true);
       sortOrder = "scan";
       sortByScanOrder();
     } else {
       sortOrder = "date";
-      var parent = $("table")[0].parentNode;
-      $("table").remove();
-      parent.appendChild(savedTable);
+      restoreTable();
     }
     return false;
   });
   $("#choose-date").bind("click", function() {
+    restoreTable();
     chooseDate();
     return false;
   });
   $("#search").bind("click", function() {
+    restoreTable();
     searchEvents();
     return false;
   });
@@ -701,10 +716,31 @@ function miscMenu() {
     hideShow(false, false, false, getSettings("shows"));
     return false;
   });
+  $("#list-new").bind("click", function() {
+    restoreTable();
+    limitedDisplay = true;
+    var blankTable = hideShow(false, getSettings("timestamp"));
+    if (blankTable) {
+      // Restore table.
+      hideShow();
+      colorbox("<a href='#' id='csid-close'>No new events have arrived since " +
+	       getSettings("timestamp") + "</a>");
+    } else {
+      $.colorbox.close();
+      var maxTimestamp = "";
+      $("tr").each(function(key, node) {
+	var timestamp = node.getAttribute("time");
+	if (timestamp > maxTimestamp)
+	  maxTimestamp = timestamp;
+      });
+      setSettings("timestamp", maxTimestamp);
+    }
+    return false;
+  });
   $("#restore").bind("click", function() {
+    restoreTable();
     $.colorbox.close();
     limitedDisplay = false;
-    hideShow();
     return false;
   });
   var func = function() {
@@ -786,4 +822,53 @@ function chooseDate() {
   });
   document.body.appendChild(picker.el);
   return false;
+}
+
+function exportEvent(id) {
+  var node = document.getElementById("event-" + id);
+  var date = node.getAttribute("date").split("-");
+  var venue = node.getAttribute("name");
+  var url = $(node).find("a").attr("href");
+  var title = $(node).find("a")[0].innerHTML;
+
+  var startDate = new Date(date[0], date[1] - 1, date[2], 19, 00, 0, 0, 0);
+  var endDate = new Date(date[0], date[1] - 1, date[2], 20, 00, 0, 0, 0);
+
+  var success = function(message) {
+  };
+  var error = function(message) {
+    alert("Unable to export event: " + message);
+  };
+
+  // create a calendar (iOS only for now)
+  //window.plugins.calendar.createCalendar(calendarName,success,error);
+
+  // create an event silently (on Android < 4 an interactive dialog is shown)
+  window.plugins.calendar.createEvent(title, venue, "",
+				      startDate, endDate, success, error);
+}
+
+function restoreTable() {
+  var parent = $("table")[0].parentNode;
+  $("table").remove();
+  parent.appendChild(savedTable.clone({withDataAndEvents: true})[0]);
+  if (! phoneGap)
+    loadLogos(true);
+}
+
+function shareEvent(id) {
+  var node = document.getElementById("event-" + id);
+  var date = node.getAttribute("date").split("-");
+  var venue = node.getAttribute("name");
+  var url = $(node).find("a").attr("href");
+  var title = $(node).find("a")[0].innerHTML;
+
+  window.plugins.socialsharing.share
+  ("I'm going to " + title + " at " + venue + " on " +
+   new Date(date[0], date[1] - 1, date[2], 19, 00, 0, 0, 0).toDateString() +
+   ".",
+   title,
+   //"http://csid.no/logos/larger/" + fixName(venue) + ".png",
+   null,
+   url);
 }

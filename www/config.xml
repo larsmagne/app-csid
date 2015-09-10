@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="1.0.4"
+<widget id="no.ingebrigtsen.csid.CSID--Concerts" version="1.0.7"
 	xmlns="http://www.w3.org/ns/widgets"
 	xmlns:cdv="http://cordova.apache.org/ns/1.0"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Concerts in Oslo</name>
     <description>
@@ -39,6 +40,8 @@
     </feature>
 
     <gap:plugin name="cordova-plugin-calendar" source="npm" />
+    <gap:plugin name="nl.x-services.plugins.socialsharing" source="plugins.cordova.io" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
