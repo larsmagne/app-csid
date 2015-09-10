@@ -4,7 +4,10 @@ $.support.cors = true;
 
 function splash() {
   document.addEventListener("backbutton", function() {
-    navigator.app.exitApp();
+    if ($("#close").length)
+      $.colorbox.close();
+    else
+      navigator.app.exitApp();
   }, false);
 
   document.addEventListener("resume", function() {
