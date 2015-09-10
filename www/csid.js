@@ -1,5 +1,6 @@
 var reveal = false;
 var phoneGap = false;
+var sortOrder = "date";
 
 function getSettings(name) {
   var settings = $.cookie(name);
@@ -190,12 +191,13 @@ function addVenue(name, deniedVenues) {
   });
 }
 
-function hideShow(onlyVenue, onlyAfterTimestamp) {
+function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent) {
   var venues = [];
   var i = 0;
   var onlyShows = window.location.href.match("shows=([0-9,]+)");
   var prevDate = false, anyVisible = false;
   var maxTimestamp = "";
+  var blankTable = true;
 
   // We've gotten an URL with a show list from somebody.
   if (onlyShows)
@@ -236,6 +238,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
 	visible = $(node).text().match(/quiz/i);
       else
 	visible = name == onlyVenue;
+    } else if (onlyEvent) {
+      visible = $(node).text().match(new RegExp(onlyEvent, "i"));
     } else if (onlyAfterTimestamp)
       visible = timestamp > onlyAfterTimestamp;
     else if (onlyShows)
@@ -251,6 +255,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
     if (visible) {
       $(node).removeClass("invisible");
       anyVisible = true;
+      blankTable = false;
     } else
       $(node).addClass("invisible");
   });
@@ -278,6 +283,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp) {
   }
 
   hideDuplicates();
+  return blankTable;
 }
 
 function removeElement(arr, val) {
@@ -404,18 +410,9 @@ function actionEventMenu(node, venue) {
   var type = "I'm going";
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>",
-	      width: "100%",
-	      closeButton: false,
-	      transition: "none",
-	      height: "100%",
-	      className: "event-lightbox"});
+  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" + fixName(venue) + ".png'></div><a id='event-link' href='" + link + "'>Display the event web page</a><a href='#' id='mark-event'>" + type + "</a><a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
-    $.colorbox.close();
-    return false;
-  });
-  $("#csid-close").bind("click", function() {
     $.colorbox.close();
     return false;
   });
@@ -425,10 +422,6 @@ function actionEventMenu(node, venue) {
       window.open(this.href, "_system", "location=no");
     else
       document.location.href = this.href;
-    return false;
-  });
-  $("#cboxLoadedContent").bind("click", function() {
-    $.colorbox.close();
     return false;
   });
   addScrollActions();
@@ -444,12 +437,10 @@ function actionVenueMenu(name) {
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
-  $.colorbox({html: "<div class='outer-venue-logo'><img src='logos/larger/" + fixName(name) + ".png'></div><a href='#' id='venue-limit'>" + limit + "</a><a href='#' id='venue-mark'>" + venues + "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>",
-	      width: $("body").width() + "px",
-	      closeButton: false,
-	      transition: "none",
-	      height: "100%",
-	      className: "event-lightbox"});
+  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
+	   fixName(name) + ".png'></div><a href='#' id='venue-limit'>" +
+	   limit + "</a><a href='#' id='venue-mark'>" + venues +
+	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {
     if (lastVenue != name) {
       hideShow(name);
@@ -462,16 +453,6 @@ function actionVenueMenu(name) {
     return false;
   });
 
-  $("#csid-close").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
-  
-  $("#cboxLoadedContent").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
-  
   $("#venue-mark").bind("click", function() {
     var deniedVenues = getSettings("deniedVenues");
     document.getElementById(name).checked =
@@ -504,11 +485,7 @@ function showVenueChooser() {
       "'>" + node.innerHTML + "</div>";
   });
   venues += "<a href='#' id='csid-close'>Close</a>";
-  $.colorbox({html: venues,
-	      width: $("body").width() + "px",
-	      closeButton: false,
-	      transition: "none",
-	      className: "event-lightbox"});
+  colorbox(venues);
   $("table").hide();
   $("div.venue").bind("click", function() {
     var id = $(this).attr("data");
@@ -644,21 +621,21 @@ function setHardWidths() {
   });
 }
 
+var savedTable = false;
+var limitedDisplay = false;
+
 function miscMenu() {
-  $.colorbox({html: "<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>",
-	      width: $(window).width() + "px",
-	      closeButton: false,
-	      transition: "none",
-	      height: "100%",
-	      className: "event-lightbox"});
-  $("#csid-close").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
-  $("#cboxLoadedContent").bind("click", function() {
-    $.colorbox.close();
-    return false;
-  });
+  var sortString = "Sort By Scan Time";
+  if (sortOrder == "scan")
+    sortString = "Sort By Date";
+  var restoreString = "";
+  if (limitedDisplay)
+    restoreString = "<a href='#' id='restore'>Restore Events</a>";
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+	   sortString +
+	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
+	   restoreString +
+	   "<a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
   $("#show-venues").bind("click", function() {
     showVenueChooser();
     return false;
@@ -682,5 +659,111 @@ function miscMenu() {
       exportCalendar();
     return false;
   });
+  $("#sort-method").bind("click", function() {
+    $.colorbox.close();
+    if (sortOrder == "date") {
+      savedTable = $("table")[0].cloneNode(true);
+      sortOrder = "scan";
+      sortByScanOrder();
+    } else {
+      sortOrder = "date";
+      var parent = $("table")[0].parentNode;
+      $("table").remove();
+      parent.appendChild(savedTable);
+    }
+    return false;
+  });
+  $("#choose-date").bind("click", function() {
+    chooseDate();
+    return false;
+  });
+  $("#search").bind("click", function() {
+    searchEvents();
+    return false;
+  });
+  $("#restore").bind("click", function() {
+    $.colorbox.close();
+    limitedDisplay = false;
+    hideShow();
+    return false;
+  });
+  var func = function() {
+    $("table").show();
+    $.colorbox.close();
+    $(".pika-single").remove();
+    return false;
+  };
+  $("#csid-close").bind("click", func);
+  $("#cboxLoadedContent").bind("click", func);
   addScrollActions();
+}
+
+function searchEvents() {
+  colorbox("<div class='search' id='search-wrap'><form id='search-form'><input type='string' size=30 id='search-input'></form></div><a href='#' id='do-search'>Search</a><a href='#' id='csid-close'>Close</a>");
+  $("#search-wrap").bind("click", function() {
+    return false;
+  });
+  $("#search-input").focus();
+  var func = function() {
+    var match = $("#search-input").val();
+    var blankTable = hideShow(false, false, match);
+    if (blankTable) {
+      // Restore table.
+      hideShow();
+      colorbox("<a href='#' id='csid-close'>No events matched the search string</a>");
+    } else {
+      $.colorbox.close();
+      limitedDisplay = true;
+    }
+    return false;
+  };
+  $("#search-form").bind("submit", func);
+  $("#do-search").bind("click", func);
+}
+
+function colorbox(html) {
+  $.colorbox({html: html,
+	      width: $(window).width() + "px",
+	      closeButton: false,
+	      transition: "none",
+	      height: "100%",
+	      className: "event-lightbox"});
+  $("#csid-close").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+  $("#cboxLoadedContent").bind("click", function() {
+    $.colorbox.close();
+    return false;
+  });
+}
+
+function chooseDate() {
+  $("table").hide();
+  var picker = new Pikaday({
+    format: 'YYYY-MM-DD',
+    onSelect: function(date) {
+      picker._d.setHours(5);
+      var iso = picker._d.toISOString().substring(0, 10);
+      $("table").show();
+      $(".pika-single").remove();
+      var first = false;
+      //var tr = $("tr[date=" + iso + "]")[0];
+      $("tr").each(function(key, node) {
+	var dat = node.getAttribute("date");
+	if (dat && dat == iso && ! first)
+	  first = node;
+      });
+      if (! first)
+	colorbox("<a href='#' id='csid-close'>No events on this date</a>");
+      else {
+	$.colorbox.close();
+	$('html, body').animate({
+          scrollTop: $(first).prev().offset().top
+	}, 2000);
+      }
+    }
+  });
+  document.body.appendChild(picker.el);
+  return false;
 }
