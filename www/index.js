@@ -4,10 +4,11 @@ $.support.cors = true;
 
 function splash() {
   document.addEventListener("backbutton", function() {
-    if ($("#close").length)
+    if ($("#csid-close").length)
       $.colorbox.close();
     else
       navigator.app.exitApp();
+    return false;
   }, false);
 
   document.addEventListener("resume", function() {
