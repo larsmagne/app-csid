@@ -166,8 +166,10 @@ function addNavigation() {
       StatusBar.overlaysWebView(false);
     }
   }
+  /*
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
+   */
 }
 
 function addVenue(name, deniedVenues) {
@@ -689,6 +691,7 @@ function miscMenu() {
       exportCalendar();
     return false;
   });
+  $("#sort-method").hide();
   $("#sort-method").bind("click", function() {
     $.colorbox.close();
     if (sortOrder == "date") {
@@ -849,6 +852,11 @@ function exportEvent(id) {
 }
 
 function restoreTable() {
+  if (limitedDisplay) {
+    hideShow();
+    limitedDisplay = false;
+  }
+  return;
   var parent = $("table")[0].parentNode;
   $("table").remove();
   parent.appendChild(savedTable.clone({withDataAndEvents: true})[0]);
