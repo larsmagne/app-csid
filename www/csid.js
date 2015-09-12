@@ -662,11 +662,15 @@ function miscMenu() {
     if ($("#event-" + id).length)
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
+  var pgString = "";
+  if (phoneGap)
+    pgString = "<a href='#' id='reload'>Reload Data</a>";
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
 	   goingString +
+	   pgString +
 	   "<a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
   $("#show-venues").bind("click", function() {
     showVenueChooser();
@@ -706,6 +710,11 @@ function miscMenu() {
   $("#choose-date").bind("click", function() {
     restoreTable();
     chooseDate();
+    return false;
+  });
+  $("#reload").bind("click", function() {
+    $.colorbox.close();
+    loadData();
     return false;
   });
   $("#search").bind("click", function() {
