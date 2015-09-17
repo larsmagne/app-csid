@@ -1,4 +1,5 @@
 phoneGap = true;
+var loadTime = Date.now();
 
 $.support.cors = true;
 
@@ -12,6 +13,8 @@ function splash() {
   }, false);
 
   document.addEventListener("resume", function() {
+    if (Date.now() - loadTime > 1000 * 60 * 60 * 8)
+      loadData();
   }, false);
 
   var img = new Image();
@@ -64,6 +67,7 @@ function loadData() {
 	document.body.appendChild(div);
 	addNavigation();
 	saveCache(data);
+	loadTime = Date.now();
       },
       error: function(error) {
 	loadCache();
