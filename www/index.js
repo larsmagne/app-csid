@@ -50,26 +50,7 @@ var base = "http://csid.no";
 function loadData() {
   if (navigator.network.connection.type === Connection.UNKNOWN ||
       navigator.network.connection.type === Connection.NONE) {
-    window.requestFileSystem(
-      LocalFileSystem.PERSISTENT, 0,
-      function(fileSystem) {
-        fileSystem.root.getFile(
-	  "csid-cache.html", null,
-	  function(fileEntry) {
-	    fileEntry.file(
-	      function(file) {
-		var reader = new FileReader();
-		reader.onloadend = function(evt) {
-		  displayCache(evt.target.result);
-		};
-		reader.readAsText(file);
-	      },		
-	      displayCacheFailure);
-	  },
-	  displayCacheFailure);
-      },
-      displayCacheFailure
-    );
+    loadCache();
   } else {
     $.ajax({
       url: "http://csid.no/index.html?ts=" + Date.now(),
@@ -85,10 +66,33 @@ function loadData() {
 	saveCache(data);
       },
       error: function(error) {
-	console.log(error);
+	loadCache();
       }
     });
   }
+}
+
+function loadCache() {
+  window.requestFileSystem(
+    LocalFileSystem.PERSISTENT, 0,
+    function(fileSystem) {
+      fileSystem.root.getFile(
+	"csid-cache.html", null,
+	function(fileEntry) {
+	  fileEntry.file(
+	    function(file) {
+	      var reader = new FileReader();
+	      reader.onloadend = function(evt) {
+		displayCache(evt.target.result);
+	      };
+	      reader.readAsText(file);
+	    },		
+	    displayCacheFailure);
+	},
+	displayCacheFailure);
+    },
+    displayCacheFailure
+  );
 }
 
 function displayCache(text) {
@@ -99,7 +103,7 @@ function displayCache(text) {
   document.body.innerHTML = "";
   document.body.appendChild(div);
   addNavigation();
-  $.colorbox({html: "<div class='venue-top'>Device offline; showing cached data</div>",
+  $.colorbox({html: "<div class='venue-top'>Unable to fetch new data; showing cached data</div>",
 	      width: $(window).width() + "px",
 	      close: "Close",
 	      transition: "none",
@@ -107,7 +111,7 @@ function displayCache(text) {
 }
 
 function displayCacheFailure() {
-  $.colorbox({html: "<div class='venue-top'>Device offline and no cache available</div><a href='#' id='csid-close'>Close</a>",
+  $.colorbox({html: "<div class='venue-top'>Couldn't fetch new data and no cache available</div><a href='#' id='csid-close'>Close</a>",
 	      width: $(window).width() + "px",
 	      closeButton: false,
 	      transition: "none",
