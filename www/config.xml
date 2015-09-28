@@ -17,7 +17,7 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
 
     <access origin="*" browserOnly="true"/>
-    <gap:plugin name="org.apache.cordova.inappbrowser" source="npm" />
+    <gap:plugin name="cordova-plugin-inappbrowser" source="npm" />
     <gap:plugin name="org.apache.cordova.geolocation" />
 
     <feature name="InAppBrowser"> <param name="ios-package" value="CDVInAppBrowser" /> </feature>
