@@ -435,11 +435,15 @@ function actionEventMenu(node, venue) {
   if ($.inArray(id, shows) != -1)
     type = "I'm not going after all";
   var exportString = "";
-  if (phoneGap)
+  var logo = "logos/larger/" + fixName(venue);
+  if (phoneGap) {
     exportString = "<a href='#' id='export-event'>Export Event to Calendar</a><a href='#' id='share-event'>Share Event</a>";
-  colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(venue) + ".png' srcset='logos/larger/" +
-	   fixName(venue) + "x2.png 2x'></div><div class='event-text'><div>" +
+    if (! existingLogos[fixName(venue)])
+      logo = "http://csid.no/logos/larger/" + fixName(venue);
+  }
+  colorbox("<div class='outer-venue-logo'><img src='" + logo +
+	   ".png' srcset='" + logo +
+	   "x2.png 2x'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
 	   "</div></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
