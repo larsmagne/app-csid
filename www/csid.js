@@ -565,8 +565,32 @@ function addLogos() {
     var td = node.childNodes[1];
     td.title = td.innerHTML;
     td.className = "thumb-logo";
-    td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
-      ".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+
+    if (phoneGap) {
+      window.requestFileSystem(
+	LocalFileSystem.PERSISTENT, 0,
+	function(fileSystem) {
+	  fileSystem.root.getFile(
+	    "logos/thumb/" + fixName(venue) + ".png",
+	    { create: false },
+	    function() {
+	      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
+		".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+	    },
+	    function() {
+	      // Logo doesn't exist on the local file system -- new venue.
+	      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
+		fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
+		fixName(venue) + "x2.png 2x'>";
+	    });
+	},
+	function() {
+	  // Couldn't get local file system, which should never happen.
+	});
+    } else {
+      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
+	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+    }
   });
  }
 
