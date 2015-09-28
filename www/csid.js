@@ -561,22 +561,16 @@ function addLogos() {
   var local = [];
   if (phoneGap) {
     $.map(allVenues(), function(venue) {
-      window.requestFileSystem(
-	LocalFileSystem.PERSISTENT, 0,
-	function(fileSystem) {
-	  fileSystem.root.getFile(
-	    "logos/thumb/" + fixName(venue) + ".png",
-	    { create: false },
-	    function() {
-	      local[venue] = true;
-	    },
-	    function() {
-	      // Logo doesn't exist on the local file system -- new venue.
-	      local[venue] = false;
-	    });
+      var file = cordova.file.applicationDirectory + "www/logos/thumb/" +
+	  fixName(venue) + ".png";
+      window.resolveLocalFileSystemURL(
+	file,
+	function() {
+	  local[venue] = true;
 	},
 	function() {
-	  // Couldn't get local file system, which should never happen.
+	  // Logo doesn't exist on the local file system -- new venue.
+	  local[venue] = false;
 	});
     });
   }
