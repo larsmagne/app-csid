@@ -558,6 +558,28 @@ function showVenueChooser() {
 }
 
 function addLogos() {
+  var local = [];
+  if (phoneGap) {
+    $.map(allVenues(), function(venue) {
+      window.requestFileSystem(
+	LocalFileSystem.PERSISTENT, 0,
+	function(fileSystem) {
+	  fileSystem.root.getFile(
+	    "logos/thumb/" + fixName(venue) + ".png",
+	    { create: false },
+	    function() {
+	      local[venue] = true;
+	    },
+	    function() {
+	      // Logo doesn't exist on the local file system -- new venue.
+	      local[venue] = false;
+	    });
+	},
+	function() {
+	  // Couldn't get local file system, which should never happen.
+	});
+    });
+  }
   $("tr").each(function(key, node) {
     var venue = node.getAttribute("name");
     if (! venue)
@@ -566,27 +588,10 @@ function addLogos() {
     td.title = td.innerHTML;
     td.className = "thumb-logo";
 
-    if (phoneGap) {
-      window.requestFileSystem(
-	LocalFileSystem.PERSISTENT, 0,
-	function(fileSystem) {
-	  fileSystem.root.getFile(
-	    "logos/thumb/" + fixName(venue) + ".png",
-	    { create: false },
-	    function() {
-	      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
-		".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
-	    },
-	    function() {
-	      // Logo doesn't exist on the local file system -- new venue.
-	      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
-		fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
-		fixName(venue) + "x2.png 2x'>";
-	    });
-	},
-	function() {
-	  // Couldn't get local file system, which should never happen.
-	});
+    if (phoneGap && ! local[venue]) {
+      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
+	fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
+	fixName(venue) + "x2.png 2x'>";
     } else {
       td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
 	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
@@ -952,4 +957,14 @@ function shareEvent(id) {
    //"http://csid.no/logos/larger/" + fixName(venue) + ".png",
    null,
    url);
+}
+
+function allVenues() {
+  var venues = [];
+  var i = 0;
+  $("input[type=checkbox]").each(function(key, node) {
+    if (! node.id.match(/show/))
+      venues[i++] = node.id;
+  });
+  return venues;
 }
