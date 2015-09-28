@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd www/logos/thumb
+
+echo "var existingLogos = { dummy: true" > ../../files.js
+for file in `ls | grep -v x2.png`; do
+    echo , ${file%.*} : true  >> ../../files.js
+done
+
+echo "};" >> ../../files.js

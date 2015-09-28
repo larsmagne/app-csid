@@ -558,22 +558,6 @@ function showVenueChooser() {
 }
 
 function addLogos() {
-  var local = [];
-  if (phoneGap) {
-    $.map(allVenues(), function(venue) {
-      var file = cordova.file.applicationDirectory + "www/logos/thumb/" +
-	  fixName(venue) + ".png";
-      window.resolveLocalFileSystemURL(
-	file,
-	function() {
-	  local[venue] = true;
-	},
-	function() {
-	  // Logo doesn't exist on the local file system -- new venue.
-	  local[venue] = false;
-	});
-    });
-  }
   $("tr").each(function(key, node) {
     var venue = node.getAttribute("name");
     if (! venue)
@@ -582,7 +566,7 @@ function addLogos() {
     td.title = td.innerHTML;
     td.className = "thumb-logo";
 
-    if (phoneGap && ! local[venue]) {
+    if (phoneGap && ! existingLogos[fixName(venue)]) {
       td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
 	fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
 	fixName(venue) + "x2.png 2x'>";

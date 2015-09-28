@@ -1,6 +1,7 @@
 APK=platforms/android/build/outputs/apk/android-release-unsigned.apk
 
 release-android:
+	./make-file-list
 	rm -f csid.apk
 	cp www/config.xml www/oconfig.xml
 	sed 's/.CSID--Concerts//' < www/oconfig.xml | egrep -vi 'splash|inappbrowser|geolocation' > www/config.xml
