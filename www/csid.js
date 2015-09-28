@@ -438,7 +438,8 @@ function actionEventMenu(node, venue) {
   if (phoneGap)
     exportString = "<a href='#' id='export-event'>Export Event to Calendar</a><a href='#' id='share-event'>Share Event</a>";
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(venue) + ".png'></div><div class='event-text'><div>" +
+	   fixName(venue) + ".png' srcset='logos/larger/" +
+	   fixName(venue) + "x2.png 2x'></div><div class='event-text'><div>" +
 	   $(node).find("a")[0].innerHTML +
 	   "</div></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
@@ -481,7 +482,8 @@ function actionVenueMenu(name) {
     venues = "Include events from " + displayName;
 
   colorbox("<div class='outer-venue-logo'><img src='logos/larger/" +
-	   fixName(name) + ".png'></div><a href='#' id='venue-limit'>" +
+	   fixName(name) + ".png' srcset='logos/larger/" +
+	   fixName(name) + "x2.png 2x'></div><a href='#' id='venue-limit'>" +
 	   limit + "</a><a href='#' id='venue-mark'>" + venues +
 	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {
@@ -563,7 +565,8 @@ function addLogos() {
     var td = node.childNodes[1];
     td.title = td.innerHTML;
     td.className = "thumb-logo";
-    td.innerHTML = "<img src='" + "logos/thumb/" + fixName(venue) + ".png'>";
+    td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
+      ".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
   });
  }
 
@@ -596,6 +599,8 @@ function loadLogo(mobilep, venues, index) {
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);
   };
+  if (window.devicePixelRatio == 2)
+    image.srcSet = "logos/thumb/" + fixName(venue) + "x2.png 2x";
   image.src = "logos/thumb/" + fixName(venue) + ".png";
 }
 
@@ -679,20 +684,25 @@ function miscMenu() {
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
   var pgString = "";
-  if (phoneGap)
+  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'></div>";
+  if (phoneGap) {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
+    appString = "";
+  }
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
 	   goingString +
 	   pgString +
-	   "<a href='#' id='about'>About</a><a href='#' id='csid-close'>Close</a>");
+	   "<a href='#' id='add-venue'>Add Venue</a><a href='#' id='about'>About</a>" +
+	   appString +
+	   "<a href='#' id='csid-close'>Close</a>");
   $("#show-venues").bind("click", function() {
     showVenueChooser();
     return false;
   });
-  $("#about").bind("click", function() {
+  var aboutPage = function() {
     $.colorbox.close();
     var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
     if (phoneGap && device.platform == "iOS")
@@ -700,6 +710,20 @@ function miscMenu() {
     else
       document.location.href = url;
     return false;
+  };
+  $("#about").bind("click", aboutPage);
+  $("#add-venue").bind("click", function() {
+    colorbox("<a href='#' id='add'>To request a new venue, click here and leave a comment on the blog page.</a>");
+    $("#add").bind("click", aboutPage);
+    return false;
+  });
+  $("#apple").bind("click", function() {
+    $.colorbox.close();
+    document.location.href = "https://geo.itunes.apple.com/us/app/csid-concerts-on-oslo/id1037896784?mt=8";
+  });
+  $("#google").bind("click", function() {
+    $.colorbox.close();
+    document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {
