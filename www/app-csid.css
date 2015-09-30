@@ -9,5 +9,5 @@ html * {
 @font-face {
   font-family: SourceSans;
   font-weight: bold;
-  src: url("SourceSansPro-Semibold.otf") format("opentype");
+  src: url("SourceSansPro-Bold.otf") format("opentype");
 }
