@@ -63,11 +63,17 @@ function loadData() {
 	div.innerHTML = data;
 	$(div).find("script").remove();
 	$(div).find("head").remove();
-	    document.body.innerHTML = "";
-	    document.body.appendChild(div);
-	    addNavigation();
-	    saveCache(data);
-	    loadTime = Date.now();
+	var display = function() {
+	  document.body.innerHTML = "";
+	  document.body.appendChild(div);
+	  addNavigation();
+	  saveCache(data);
+	  loadTime = Date.now();
+	};
+	if (device.platform == "iOS")
+	  display();
+	else
+	  waitForWebfonts(["SourceSans"], display);
       },
       error: function(error) {
 	loadCache();
