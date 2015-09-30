@@ -72,7 +72,7 @@ function loadData() {
 	  saveCache(data);
 	  loadTime = Date.now();
 	};
-	if (device.platform == "iOS")
+	if (false && device.platform == "iOS")
 	  display();
 	else
 	  waitForWebfonts(["SourceSans"], display);
