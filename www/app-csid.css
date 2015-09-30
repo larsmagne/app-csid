@@ -1,0 +1,13 @@
+html * {
+  font-family: SourceSans;
+  font-size: 11pt !important;
+}
+@font-face {
+  font-family: SourceSans;
+  src: url("SourceSansPro-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: SourceSans;
+  font-weight: bold;
+  src: url("SourceSansPro-Semibold.otf") format("opentype");
+}
