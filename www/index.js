@@ -63,15 +63,11 @@ function loadData() {
 	div.innerHTML = data;
 	$(div).find("script").remove();
 	$(div).find("head").remove();
-	waitForWebfonts(
-	  ["SourceSans"],
-	  function() {
 	    document.body.innerHTML = "";
 	    document.body.appendChild(div);
 	    addNavigation();
 	    saveCache(data);
 	    loadTime = Date.now();
-	  });
       },
       error: function(error) {
 	loadCache();
