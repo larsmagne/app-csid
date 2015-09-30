@@ -64,6 +64,8 @@ function loadData() {
 	$(div).find("script").remove();
 	$(div).find("head").remove();
 	var display = function() {
+	  var style = $('<style>html * {  font-family: SourceSans !important;  font-size: 11pt !important;}</style>');
+	  $('html > head').append(style);
 	  document.body.innerHTML = "";
 	  document.body.appendChild(div);
 	  addNavigation();
@@ -168,43 +170,47 @@ function waitForWebfonts(fonts, callback) {
       // Large font size makes even subtle changes obvious
       node.style.fontSize      = '300px';
       // Reset any font properties
-      node.style.fontFamily    = 'sans-serif';
+      node.style.fontFamily    = 'serif';
       node.style.fontVariant   = 'normal';
       node.style.fontStyle     = 'normal';
       node.style.fontWeight    = "bold";
       node.style.letterSpacing = '0';
       document.body.appendChild(node);
 
-      // Remember width with no applied web font
-      var width = node.offsetWidth;
+      setTimeout(
+	function() {
+	  // Remember width with no applied web font
+	  var width = node.offsetWidth;
 
-      node.style.fontFamily = font;
-
-      var interval;
-      var checkFont = function() {
-        // Compare current width with original width
-        if(node && node.offsetWidth != width) {
-          ++loadedFonts;
-          node.parentNode.removeChild(node);
-          node = null;
-        }
-
-        // If all fonts have been loaded
-        if (loadedFonts >= fonts.length) {
-          if (interval) {
-            clearInterval(interval);
-          }
-          if (loadedFonts == fonts.length) {
-            callback();
-            return true;
-          }
-        }
-	return false;
-      };
-
-      if(!checkFont()) {
-        interval = setInterval(checkFont, 50);
-      }
+	  node.style.fontFamily = font;
+	  
+	  var interval;
+	  var checkFont = function() {
+            // Compare current width with original width
+            if(node && node.offsetWidth < width) {
+              ++loadedFonts;
+              node.parentNode.removeChild(node);
+              node = null;
+            }
+	    
+            // If all fonts have been loaded
+            if (loadedFonts >= fonts.length) {
+              if (interval) {
+		clearInterval(interval);
+              }
+              if (loadedFonts == fonts.length) {
+		callback();
+		return true;
+              }
+            }
+	    return false;
+	  };
+	  
+	  if(!checkFont()) {
+            interval = setInterval(checkFont, 50);
+	  }
+	},
+	50);
     })(fonts[i]);
   }
 }
