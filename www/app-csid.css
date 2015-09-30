@@ -1,5 +1,5 @@
 html * {
-  font-family: SourceSans;
+  font-family: SourceSans !important;
   font-size: 11pt !important;
 }
 @font-face {
