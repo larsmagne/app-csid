@@ -75,7 +75,10 @@ function loadData() {
 	if (false && device.platform == "iOS")
 	  display();
 	else
-	  waitForWebfonts(["SourceSans"], display);
+	  waitForWebfonts("SourceSans", "bold",
+			  function() {
+			    waitForWebfonts("SourceSans", "normal", display);
+			  });
       },
       error: function(error) {
 	loadCache();
@@ -156,63 +159,42 @@ function saveCache(data) {
     fail);
 }
 
-function waitForWebfonts(fonts, callback) {
-  var loadedFonts = 0;
-  for(var i = 0, l = fonts.length; i < l; ++i) {
-    (function(font) {
-      var node = document.createElement('span');
-      // Characters that vary significantly among different fonts
-      node.innerHTML = 'giItT1WQy@!-/#';
-      // Visible - so we can measure it - but not on the screen
-      node.style.position      = 'absolute';
-      node.style.left          = '-10000px';
-      node.style.top           = '-10000px';
-      // Large font size makes even subtle changes obvious
-      node.style.fontSize      = '300px';
-      // Reset any font properties
-      node.style.fontFamily    = 'serif';
-      node.style.fontVariant   = 'normal';
-      node.style.fontStyle     = 'normal';
-      node.style.fontWeight    = "bold";
-      node.style.letterSpacing = '0';
-      document.body.appendChild(node);
+function waitForWebfonts(font, weight, callback) {
+  var node = document.createElement('span');
+  // Characters that vary significantly among different fonts
+  node.innerHTML = 'giItT1WQy@!-/#';
+  // Visible - so we can measure it - but not on the screen
+  node.style.position      = 'absolute';
+  node.style.left          = '-10000px';
+  node.style.top           = '-10000px';
+  // Large font size makes even subtle changes obvious
+  node.style.fontSize      = '300px';
+  // Reset any font properties
+  node.style.fontFamily    = 'serif';
+  node.style.fontVariant   = 'normal';
+  node.style.fontStyle     = 'normal';
+  node.style.fontWeight    = weight;
+  node.style.letterSpacing = '0';
+  document.body.appendChild(node);
 
-      setTimeout(
-	function() {
-	  // Remember width with no applied web font
-	  var width = node.offsetWidth;
+  // Remember width with no applied web font
+  var width = node.offsetWidth;
 
-	  node.style.fontFamily = font;
-	  
-	  var interval;
-	  var checkFont = function() {
-            // Compare current width with original width
-            if(node && node.offsetWidth < width) {
-              ++loadedFonts;
-              node.parentNode.removeChild(node);
-              node = null;
-            }
-	    
-            // If all fonts have been loaded
-            if (loadedFonts >= fonts.length) {
-              if (interval) {
-		clearInterval(interval);
-              }
-              if (loadedFonts == fonts.length) {
-		callback();
-		return true;
-              }
-            }
-	    return false;
-	  };
-	  
-	  if(!checkFont()) {
-            interval = setInterval(checkFont, 50);
-	  }
-	},
-	50);
-    })(fonts[i]);
-  }
+  node.style.fontFamily = font;
+  
+  var interval;
+  var checkFont = function() {
+    // Compare current width with original width
+    if (node && node.offsetWidth != width) {
+      if (interval)
+	clearInterval(interval);
+      callback();
+      return true;
+    }
+    return false;
+  };
+  
+  interval = setInterval(checkFont, 50);
 }
 
 function fail() {
