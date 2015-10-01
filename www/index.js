@@ -72,7 +72,8 @@ function loadData() {
 	  saveCache(data);
 	  loadTime = Date.now();
 	};
-	if (false && device.platform == "iOS")
+	// If we're reloading, just display immediately.
+	if ($("#small-heading").length)
 	  display();
 	else
 	  waitForWebfonts("SourceSans", "bold",
