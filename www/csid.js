@@ -133,7 +133,7 @@ function addNavigation() {
     });
   }
 
-  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a></div>");
+  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a></div></div>");
 
   $("img#logo").bind("click", function() {
     window.location.href = "http://csid.no/";
@@ -165,6 +165,8 @@ function addNavigation() {
       setHardWidths();
       StatusBar.overlaysWebView(false);
     }
+  } else {
+    addDesktopLogos();
   }
   /*
   if (! savedTable)
@@ -251,7 +253,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
     } else if (onlyEvent) {
       visible = $(node).text().match(new RegExp(onlyEvent, "i"));
     } else if (onlyAfterTimestamp)
-      visible = timestamp > onlyAfterTimestamp;
+      visible = (timestamp > onlyAfterTimestamp &&
+		 $.inArray(name, venues) != -1);
     else if (onlyShows)
       visible = $.inArray(eventId, onlyShows) != -1;
     else {
@@ -477,11 +480,11 @@ function actionEventMenu(node, venue) {
 
 function actionVenueMenu(name) {
   var displayName = name.replace(/_/g, " ");
-  var limit = "Just show events from " + displayName;
+  var limit = "Show events from " + displayName;
   if (lastVenue == name)
     limit = "Show all events again";
   var deniedVenues = getSettings("deniedVenues");
-  var venues = "Don't show events from " + displayName;
+  var venues = "Exclude events from " + displayName;
   if ($.inArray(name, deniedVenues) != -1)
     venues = "Include events from " + displayName;
 
@@ -584,7 +587,7 @@ function addLogos() {
 	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
     }
   });
- }
+}
 
 function loadLogos(mobilep) {
   var venues = [];
@@ -595,6 +598,33 @@ function loadLogos(mobilep) {
       venues.push(id);
   });
   loadLogo(mobilep, venues, 0);
+}
+
+function addDesktopLogos() {
+  $("tr").each(function(key, node) {
+    var venue = node.getAttribute("name");
+    if (! venue)
+      return;
+    var td = node.childNodes[1];
+    var title = td.innerHTML;
+    var focus = false;
+    $(td).mouseenter(function() {
+      var image = new Image();
+      focus = true;
+      image.onload = function() {
+	if (focus) {
+	  td.innerHTML = "";
+	  td.appendChild(image);
+	}
+      };
+      image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
+      image.src = "logos/thumb/" + fixName(venue) + ".png";
+    });
+    $(td).mouseleave(function() {
+      focus = false;
+      td.innerHTML = title;
+    });
+  });
 }
 
 function loadLogo(mobilep, venues, index) {
@@ -734,7 +764,7 @@ function miscMenu() {
   });
   $("#apple").bind("click", function() {
     $.colorbox.close();
-    document.location.href = "https://geo.itunes.apple.com/us/app/csid-concerts-on-oslo/id1037896784?mt=8";
+    document.location.href = "https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4";
   });
   $("#google").bind("click", function() {
     $.colorbox.close();

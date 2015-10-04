@@ -18,7 +18,7 @@ div#selector {
   width: 140px;
   float: right;
 }
-table.events tr {
+table.events tr td {
   vertical-align: middle;
 }
 p {
@@ -135,7 +135,7 @@ div#small-heading {
   display: none;
 }
 
-@media only screen and (max-width: 6000px) {
+@media only screen and (max-width: 600px) {
   /* Style adjustments for small screens. */
   html {
     display: block;
