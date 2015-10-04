@@ -161,6 +161,7 @@ function saveCache(data) {
 }
 
 function waitForWebfonts(font, weight, callback) {
+  var times = 0;
   var node = document.createElement('span');
   // Characters that vary significantly among different fonts
   node.innerHTML = 'giItT1WQy@!-/#';
@@ -186,9 +187,9 @@ function waitForWebfonts(font, weight, callback) {
   var interval;
   var checkFont = function() {
     // Compare current width with original width
-    if (node && node.offsetWidth != width) {
-      if (interval)
-	clearInterval(interval);
+    if (node && node.offsetWidth != width ||
+       times++ > 10) {
+      clearInterval(interval);
       callback();
       return true;
     }
