@@ -73,7 +73,7 @@ function loadData() {
 	  loadTime = Date.now();
 	};
 	// If we're reloading, just display immediately.
-	if ($("#small-heading").length)
+	if ($("#small-heading").length || device.platform == "Win32NT")
 	  display();
 	else
 	  waitForWebfonts("SourceSans", "bold",
