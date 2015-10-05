@@ -139,12 +139,18 @@ function addNavigation() {
     window.location.href = "http://csid.no/";
   });
 
-  $('a#help').colorbox({width: "400px",
-			initialWidth: "400px",
-			close: "Close",
-			className: "lightbox"
-		       });
-
+  $('a#help').bind("click", function() {
+    $.ajax({
+      url: "help.html",
+      dataType: "text",
+      success: function(data) {
+	colorbox("<div class='help'>" + data + "</div>" +
+		 "<a href='#' id='csid-close'>Close</a>");
+      }
+    });
+    return false;
+  });
+    
   $('#small-menu').bind("click", function(e) {
     miscMenu();
     return false;
@@ -156,7 +162,7 @@ function addNavigation() {
     else
       loadLogos(mobilep);
     $(window).on("orientationchange", function() {
-      $.colorbox.close();
+      closeColorbox();
       if (phoneGap)
 	setHardWidths();
       return true;
@@ -454,21 +460,21 @@ function actionEventMenu(node, venue) {
 	   "<a href='#' id='csid-close'>Close</a>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
-    $.colorbox.close();
+    closeColorbox();
     return false;
   });
   $("#export-event").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     exportEvent(id);
     return false;
   });
   $("#share-event").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     shareEvent(id);
     return false;
   });
   $("#event-link").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     if (phoneGap && device.platform == "iOS")
       window.open(this.href, "_system", "location=no");
     else
@@ -506,7 +512,7 @@ function actionVenueMenu(name) {
       hideShow();
       lastVenue = false;
     }
-    $.colorbox.close();
+    closeColorbox();
     return false;
   });
 
@@ -516,7 +522,7 @@ function actionVenueMenu(name) {
       ($.inArray(name, deniedVenues) != -1);
     setVenueCookie();
     hideShow();
-    $.colorbox.close();
+    closeColorbox();
     return false;
   });
 
@@ -524,7 +530,7 @@ function actionVenueMenu(name) {
     $("tr.invisible").each(function(key, node) {
       $(node).removeClass("invisible");
     });
-    $.colorbox.close();
+    closeColorbox();
     return false;
   });
   addScrollActions();
@@ -561,7 +567,7 @@ function showVenueChooser() {
   });
   var func = function() {
     $("table").show();
-    $.colorbox.close();
+    closeColorbox();
     return false;
   };
   $("div.venue-top").bind("click", func);
@@ -686,11 +692,11 @@ function addScrollActions() {
     return;
   removeScrollActions();
   $(window).on("touchmove", function() {
-    $.colorbox.close();
+    closeColorbox();
     return true;
   });
   $(window).on("scroll", function() {
-    $.colorbox.close();
+    closeColorbox();
     return true;
   });
 }
@@ -748,7 +754,7 @@ function miscMenu() {
     return false;
   });
   var aboutPage = function() {
-    $.colorbox.close();
+    closeColorbox();
     var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
     if (phoneGap && device.platform == "iOS")
       window.open(url, "_system", "location=no");
@@ -763,16 +769,16 @@ function miscMenu() {
     return false;
   });
   $("#apple").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     document.location.href = "https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4";
   });
   $("#google").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     var shows = getSettings("shows");
     if (shows.length < 1)
       alert("No events to export");
@@ -782,7 +788,7 @@ function miscMenu() {
   });
   $("#sort-method").hide();
   $("#sort-method").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     if (sortOrder == "date") {
       sortOrder = "scan";
       sortByScanOrder();
@@ -798,7 +804,7 @@ function miscMenu() {
     return false;
   });
   $("#reload").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     loadData();
     return false;
   });
@@ -808,7 +814,7 @@ function miscMenu() {
     return false;
   });
   $("#going").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     limitedDisplay = true;
     hideShow(false, false, false, getSettings("shows"));
     return false;
@@ -823,7 +829,7 @@ function miscMenu() {
       colorbox("<a href='#' id='csid-close'>No new events have arrived since " +
 	       getSettings("timestamp") + "</a>");
     } else {
-      $.colorbox.close();
+      closeColorbox();
       var maxTimestamp = "";
       $("tr").each(function(key, node) {
 	var timestamp = node.getAttribute("time");
@@ -836,13 +842,13 @@ function miscMenu() {
   });
   $("#restore").bind("click", function() {
     restoreTable();
-    $.colorbox.close();
+    closeColorbox();
     limitedDisplay = false;
     return false;
   });
   var func = function() {
     $("table").show();
-    $.colorbox.close();
+    closeColorbox();
     $(".pika-single").remove();
     return false;
   };
@@ -865,7 +871,7 @@ function searchEvents() {
       hideShow();
       colorbox("<a href='#' id='csid-close'>No events matched the search string</a>");
     } else {
-      $.colorbox.close();
+      closeColorbox();
       limitedDisplay = true;
     }
     return false;
@@ -874,21 +880,41 @@ function searchEvents() {
   $("#do-search").bind("click", func);
 }
 
+var box = false;
+
 function colorbox(html) {
-  $.colorbox({html: html,
-	      width: $(window).width() + "px",
-	      closeButton: false,
-	      transition: "none",
-	      height: "100%",
-	      className: "event-lightbox"});
+  if (box) {
+    $(box).remove();
+    box = false;
+  }
+  box = document.createElement("div");
+  box.style.position = "absolute";
+  box.style.left = "0px";
+  box.style.top = $(window).scrollTop() + "px";
+  box.style.height = $(window).height() + "px";
+  box.style.width = $(window).width() + "px";
+  box.style.display = "block";
+  box.style.background = "#105010";
+  box.style.color = "black";
+  box.style.padding = "0px";
+  box.className = "event-lightbox";
+  box.innerHTML = html;
   $("#csid-close").bind("click", function() {
-    $.colorbox.close();
+    closeColorbox();
     return false;
   });
-  $("#cboxLoadedContent").bind("click", function() {
-    $.colorbox.close();
+  $(box).bind("click", function() {
+    closeColorbox();
     return false;
   });
+  document.body.appendChild(box);
+}
+
+function closeColorbox() {
+  if (box) {
+    $(box).remove();
+    box = false;
+  }
 }
 
 function chooseDate() {
@@ -910,7 +936,7 @@ function chooseDate() {
       if (! first)
 	colorbox("<a href='#' id='csid-close'>No events on this date</a>");
       else {
-	$.colorbox.close();
+	closeColorbox();
 	$('html, body').animate({
           scrollTop: $(first).prev().offset().top
 	}, 2000);
