@@ -98,9 +98,9 @@
     <gap:splash src="splash.png" />
     
     <platform name="wp8">
-      <icon src="icon-windows99.png" width="99" height="99" />
+      <icon src="csid-icon99.png" width="99" height="99" />
       <!-- tile image -->
-      <icon src="icon-windows159.png" width="159" height="159" />
+      <icon src="csid-icon159.png" width="159" height="159" />
     </platform>
 
     <gap:splash gap:platform="winphone" src="screen-portrait.jpg" />
