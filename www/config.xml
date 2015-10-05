@@ -57,7 +57,8 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <icon src="www/csid-icon.png" />
+    <icon src="csid-icon.png" />
+    
     <icon src="www/csid-icon.png" platform="android" density="ldpi" />
     <icon src="www/csid-icon.png" platform="android" density="mdpi" />
     <icon src="www/csid-icon.png" platform="android" density="hdpi" />
