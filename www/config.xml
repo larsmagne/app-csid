@@ -97,12 +97,10 @@
     <gap:splash src="splash-1024x2.png" gap:platform="ios" width="2048" height="1536" />
     <gap:splash src="splash.png" />
     
-    <platform name="wp8">
-      <icon src="csid-icon99.png" width="99" height="99" />
-      <!-- tile image -->
-      <icon src="csid-icon159.png" width="159" height="159" />
-    </platform>
-
+    <icon src="csid-icon99.png" gap:platform="winphone" width="99" height="99" />
+    <!-- tile image -->
+    <icon src="csid-icon159.png" gap:platform="winphone" width="159" height="159" />
+    
     <gap:splash gap:platform="winphone" src="screen-portrait.jpg" />
 
  </widget>

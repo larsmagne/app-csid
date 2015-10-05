@@ -475,7 +475,7 @@ function actionEventMenu(node, venue) {
   });
   $("#event-link").bind("click", function() {
     closeColorbox();
-    if (phoneGap && device.platform == "iOS")
+    if (phoneGap && device.platform != "Android")
       window.open(this.href, "_system", "location=no");
     else
       document.location.href = this.href;
@@ -756,7 +756,7 @@ function miscMenu() {
   var aboutPage = function() {
     closeColorbox();
     var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
-    if (phoneGap && device.platform == "iOS")
+    if (phoneGap && device.platform != "Android")
       window.open(url, "_system", "location=no");
     else
       document.location.href = url;
