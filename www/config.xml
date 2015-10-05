@@ -67,6 +67,10 @@
     <icon src="csid-icon72.png" platform="ios" width="72" height="72" />
     <icon src="csid-icon57.png" platform="ios" width="57" height="57" />
     <icon src="csid-icon152.png" platform="ios" width="152" height="152" />
+
+    <icon src="csid-icon99.png" gap:platform="wp8" width="99" height="99" />
+    <!-- tile image -->
+    <icon src="csid-icon159.png" gap:platform="wp8" width="159" height="159" />
     
     <preference name="SplashScreen" value="screen" />
     <!-- iPhone / iPod Touch  -->
@@ -96,10 +100,6 @@
     <gap:splash src="splash-1024.png" gap:platform="ios" width="1024" height="768" />
     <gap:splash src="splash-1024x2.png" gap:platform="ios" width="2048" height="1536" />
     <gap:splash src="splash.png" />
-    
-    <icon src="www/csid-icon99.png" gap:platform="winphone" width="99" height="99" />
-    <!-- tile image -->
-    <icon src="www/csid-icon159.png" gap:platform="winphone" width="159" height="159" />
     
     <gap:splash gap:platform="winphone" src="screen-portrait.jpg" />
 
