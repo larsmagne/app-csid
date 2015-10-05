@@ -447,7 +447,8 @@ function actionEventMenu(node, venue) {
   var logo = "logos/larger/" + fixName(venue);
   if (phoneGap) {
     if (device.platform != "Win32NT")
-      exportString = "<a href='#' id='export-event'>Export Event to Calendar</a><a href='#' id='share-event'>Share Event</a>";
+      exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
+    exportString += "<a href='#' id='share-event'>Share Event</a>";
     if (! existingLogos[fixName(venue)])
       logo = "http://csid.no/logos/larger/" + fixName(venue);
   }
