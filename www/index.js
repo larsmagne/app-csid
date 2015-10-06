@@ -64,8 +64,10 @@ function loadData() {
 	$(div).find("script").remove();
 	$(div).find("head").remove();
 	var display = function() {
-	  var style = $('<style>html * {  font-family: SourceSans !important;  font-size: 11pt !important;}</style>');
-	  $('html > head').append(style);
+	  if (device.platform != "Win32NT") {
+	    var style = $('<style>html * {  font-family: SourceSans !important;  font-size: 11pt !important;}</style>');
+	    $('html > head').append(style);
+	  }
 	  document.body.innerHTML = "";
 	  document.body.appendChild(div);
 	  addNavigation();
