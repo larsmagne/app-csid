@@ -17,6 +17,7 @@ var existingLogos = { dummy: true
 , Internasjonalen : true
 , Jakob : true
 , John_Dee : true
+, Josefine : true
 , Jxger : true
 , Konsertforeninga : true
 , Konserthuset : true
