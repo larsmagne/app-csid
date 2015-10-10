@@ -99,6 +99,7 @@ div.help a {
   text-decoration: none;
   font-weight: bold;
   background: white;
+  padding: 0px;
 }
 
 span.venue {
@@ -200,7 +201,7 @@ div#small-heading {
   div.outer-venue-logo {
     position: relative;
     height: 200px;
-    background: white !important;
+    background: white;
     text-align: center;
     display: block;
     width: 100%;
