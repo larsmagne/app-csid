@@ -30,6 +30,7 @@
     <gap:plugin name="cordova-plugin-device" />
     <gap:plugin name="cordova-plugin-network-information" />
     <gap:plugin name="cordova-plugin-file" />
+    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
 
     <feature name="Device">
       <param name="ios-package" value="CDVDevice" onload="true" />
