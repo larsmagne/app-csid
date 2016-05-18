@@ -39,6 +39,8 @@
     <gap:plugin name="cordova-plugin-calendar" source="npm" />
     <gap:plugin name="nl.x-services.plugins.socialsharing" source="plugins.cordova.io" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <preference name="fullscreen" value="true" />
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
