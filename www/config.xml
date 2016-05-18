@@ -18,7 +18,7 @@
     <access origin="*" browserOnly="true"/>
 
 
-    <gap:plugin name="cordova-plugin-statusbar" />
+    <gap:plugin name="cordova-plugin-statusbar" source="npm" />
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#000000" />
     <preference name="StatusBarStyle" value="lightcontent" />
@@ -27,9 +27,9 @@
       <param name="ios-package" value="CDVStatusBar" onload="true" />
     </feature>
 
-    <gap:plugin name="cordova-plugin-device" />
-    <gap:plugin name="cordova-plugin-network-information" />
-    <gap:plugin name="cordova-plugin-file" />
+    <gap:plugin name="cordova-plugin-device" source="npm" />
+    <gap:plugin name="cordova-plugin-network-information" source="npm" />
+    <gap:plugin name="cordova-plugin-file" source="npm" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
 
     <feature name="Device">
