@@ -1,5 +1,21 @@
 APK=platforms/android/build/outputs/apk/android-release-unsigned.apk
 
+# To create the initial project, check it out and then run "make create",
+# which will create all the Cordova build stuff.
+create:
+	cordova create mobile
+	mv mobile/hooks mobile/platforms mobile/plugins .
+	rm -r mobile
+	cordova platform add android
+	cordova plugin add cordova-plugin-device
+	cordova plugin add cordova-plugin-file
+	cordova plugin add cordova-plugin-geolocation
+	cordova plugin add cordova-plugin-inappbrowser
+	cordova plugin add cordova-plugin-network-information
+	cordova plugin add cordova-plugin-statusbar
+	cordova plugin add cordova-plugin-calendar
+	cordova plugin add cordova-plugin-x-socialsharing
+
 release-android:
 	./make-file-list
 	rm -f csid.apk
