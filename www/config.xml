@@ -92,6 +92,19 @@
     <preference name="SplashScreenDelay" value="0" />
     <preference name="FadeSplashScreenDuration" value="0" />
     <preference name="SplashScreen" value="screen" />
-    <gap:splash src="splash-1024.png" />
+
+    <platform name="ios">
+      <!-- images are determined by width and height. The following are supported -->
+      <splash src="splash-320.png" width="320" height="480"/>
+      <splash src="splash-320x2.png" width="640" height="960"/>
+      <splash src="splash-768.png" width="768" height="1024"/>
+      <splash src="splash-768x2.png" width="1536" height="2048"/>
+      <splash src="splash-1024.png" width="1024" height="768"/>
+      <splash src="splash-1024x2.png" width="2048" height="1536"/>
+      <splash src="splash-640.png" width="640" height="1136"/>
+      <splash src="splash-750.png" width="750" height="1334"/>
+      <splash src="splash-1242.png" width="1242" height="2208"/>
+      <splash src="splash-2208.png" width="2208" height="1242"/>
+    </platform>
 
  </widget>

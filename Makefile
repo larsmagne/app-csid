@@ -15,6 +15,7 @@ create:
 	cordova plugin add cordova-plugin-statusbar
 	cordova plugin add cordova-plugin-calendar
 	cordova plugin add cordova-plugin-x-socialsharing
+	cordova plugin add cordova-plugin-slashscreen
 
 release-android:
 	./make-file-list
