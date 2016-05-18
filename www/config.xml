@@ -92,5 +92,7 @@
     <gap:plugin name="cordova-plugin-splashscreen" source="npm" />
     <preference name="SplashScreenDelay" value="0" />
     <preference name="FadeSplashScreenDuration" value="0" />
+    <preference name="SplashScreen" value="screen" />
+    <gap:splash src="splash-1024.png" />
 
  </widget>
