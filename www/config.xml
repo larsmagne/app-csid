@@ -93,6 +93,8 @@
     <preference name="FadeSplashScreenDuration" value="0" />
     <preference name="SplashScreen" value="screen" />
 
+    <gap:plugin name="cordova-plugin-inappbrowser" source="npm" />
+    
     <platform name="ios">
       <!-- images are determined by width and height. The following are supported -->
       <splash src="splash-320.png" width="320" height="480"/>
