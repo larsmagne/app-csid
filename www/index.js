@@ -53,7 +53,7 @@ var base = "http://csid.no";
 function loadData() {
   if (navigator.network.connection.type === Connection.UNKNOWN ||
       navigator.network.connection.type === Connection.NONE) {
-    loadCache();
+    loadCache("No network");
   } else {
     $.ajax({
       url: "http://csid.no/index.html?ts=" + Date.now(),
@@ -82,13 +82,13 @@ function loadData() {
 			  });
       },
       error: function(error) {
-	loadCache();
+	loadCache(error);
       }
     });
   }
 }
 
-function loadCache() {
+function loadCache(error) {
   window.requestFileSystem(
     LocalFileSystem.PERSISTENT, 0,
     function(fileSystem) {
@@ -99,7 +99,7 @@ function loadCache() {
 	    function(file) {
 	      var reader = new FileReader();
 	      reader.onloadend = function(evt) {
-		displayCache(evt.target.result);
+		displayCache(evt.target.result, error);
 	      };
 	      reader.readAsText(file);
 	    },		
@@ -111,7 +111,7 @@ function loadCache() {
   );
 }
 
-function displayCache(text) {
+function displayCache(text, error) {
   var div = document.createElement("div");
   div.innerHTML = text;
   $(div).find("script").remove();
@@ -119,7 +119,8 @@ function displayCache(text) {
   document.body.innerHTML = "";
   document.body.appendChild(div);
   addNavigation();
-  $.colorbox({html: "<div class='venue-top'>Unable to fetch new data; showing cached data</div>",
+  $.colorbox({html: "<div class='venue-top'>Unable to fetch new data; showing cached data" +
+	      error + "</div>",
 	      width: $(window).width() + "px",
 	      close: "Close",
 	      transition: "none",
