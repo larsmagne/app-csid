@@ -94,7 +94,7 @@ function loadCache(error) {
 	    function(file) {
 	      var reader = new FileReader();
 	      reader.onloadend = function(evt) {
-		displayCache(evt.target.result, error);
+		displayCache(evt.target.result, "");
 	      };
 	      reader.readAsText(file);
 	    },		
