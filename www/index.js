@@ -51,41 +51,36 @@ function splash() {
 var base = "http://csid.no";
 
 function loadData() {
-  if (navigator.network.connection.type === Connection.UNKNOWN ||
-      navigator.network.connection.type === Connection.NONE) {
-    loadCache("No network");
-  } else {
-    $.ajax({
-      url: "http://csid.no/index.html?ts=" + Date.now(),
-      dataType: "text",
-      success: function(data) {
-	var div = document.createElement("div");
-	div.innerHTML = data;
-	$(div).find("script").remove();
-	$(div).find("head").remove();
-	var display = function() {
-	  var style = $('<style>html * {  font-family: SourceSans !important;  font-size: 11pt !important;}</style>');
-	  $('html > head').append(style);
-	  document.body.innerHTML = "";
-	  document.body.appendChild(div);
-	  addNavigation();
-	  saveCache(data);
-	  loadTime = Date.now();
-	};
-	// If we're reloading, just display immediately.
-	if ($("#small-heading").length || device.platform == "Win32NT")
-	  display();
-	else
-	  waitForWebfonts("SourceSans", "bold",
-			  function() {
-			    waitForWebfonts("SourceSans", "normal", display);
-			  });
-      },
-      error: function(error) {
-	loadCache(error);
-      }
-    });
-  }
+  $.ajax({
+    url: "http://csid.no/index.html?ts=" + Date.now(),
+    dataType: "text",
+    success: function(data) {
+      var div = document.createElement("div");
+      div.innerHTML = data;
+      $(div).find("script").remove();
+      $(div).find("head").remove();
+      var display = function() {
+	var style = $('<style>html * {  font-family: SourceSans !important;  font-size: 11pt !important;}</style>');
+	$('html > head').append(style);
+	document.body.innerHTML = "";
+	document.body.appendChild(div);
+	addNavigation();
+	saveCache(data);
+	loadTime = Date.now();
+      };
+      // If we're reloading, just display immediately.
+      if ($("#small-heading").length || device.platform == "Win32NT")
+	display();
+      else
+	waitForWebfonts("SourceSans", "bold",
+			function() {
+			  waitForWebfonts("SourceSans", "normal", display);
+			});
+    },
+    error: function(error) {
+      loadCache(error);
+    }
+  });
 }
 
 function loadCache(error) {
