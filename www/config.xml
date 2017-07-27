@@ -39,7 +39,7 @@
     <gap:plugin name="cordova-plugin-x-socialsharing" source="npm" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <gap:plugin name="org.apache.cordova.geolocation" />
+    <gap:plugin name="cordova-plugin-geolocation" />
     
     <preference name="fullscreen" value="false" />
     
