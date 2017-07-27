@@ -39,7 +39,7 @@
     <gap:plugin name="cordova-plugin-x-socialsharing" source="npm" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <preference name="fullscreen" value="true" />
+    <preference name="fullscreen" value="false" />
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
