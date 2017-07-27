@@ -31,3 +31,6 @@ release-android:
 	zipalign -v 4 $(APK) csid.apk
 	mv www/oconfig.xml www/config.xml
 
+copy:
+	rsync -av ../csid/csid.js ../csid/csid.css ../csid/pixel.png www/
+	rsync -av ../csid/logos/larger ../csid/logos/thumb www/logos

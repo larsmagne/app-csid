@@ -2,6 +2,10 @@ var reveal = false;
 var phoneGap = false;
 var sortOrder = "date";
 var savedTable = false;
+var homePos = [59.913074, 10.751834];
+
+
+var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
 function getSettings(name) {
   var settings = $.cookie(name);
@@ -177,7 +181,7 @@ function addNavigation() {
   /*
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
-   */
+  */
 }
 
 function addVenue(name, deniedVenues) {
@@ -270,6 +274,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
 	  $(node).text().match(/quiz/i))
 	visible = false;
     }
+
     
     if (visible) {
       $(node).removeClass("invisible");
@@ -400,6 +405,52 @@ function sortByScanOrder() {
     .appendTo($table);
 }
 
+function sortByDistance() {
+  var today = new Date().toISOString().substring(0, 10);
+  var trs = [];
+  var count = 0;
+  $("tr").map(function (index, elem) {
+    var dat = this.getAttribute("date");
+    if (dat && dat == today) {
+      trs[count++] = elem;
+      $(elem).removeClass("invisible");
+    } else {
+      $(elem).addClass("invisible");
+      return;
+    }
+    var venue = elem.getAttribute("name");
+    if (! venue || ! locations[venue])
+      return;
+    var dist = distance(homePos, locations[elem.getAttribute("name")]);
+    var d = document.createElement("div");
+    d.className = "distance";
+    if (dist < 10) {
+      var meter = Math.ceil(dist * 1000);
+      if (meter < 1)
+	d.innerHTML = "you are there";
+      else
+	d.innerHTML = "" + meter + " meters";
+    } else
+      d.innerHTML = "" + Math.round((dist * 10) / 10) + " km";
+      
+    elem.childNodes[1].appendChild(d);
+  });
+
+  trs = trs.sort(function(a, b) {
+    return distance(homePos, locations[b.getAttribute("name")]) -
+      distance(homePos, locations[a.getAttribute("name")]);
+  });
+  var first = $("tr")[0];
+  trs.forEach(function(elem) {
+    var parent = elem.parentNode;
+    insertAfter(elem, first);
+  });
+}
+
+function insertAfter(newNode, referenceNode) {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
 function addRestoreLink() {
   $("#selector").append("<div class='export'><a href='http://csid.no/'>Restore list</a></div>");
 }
@@ -432,6 +483,11 @@ function exportCalendar() {
     type: "text/calendar;charset=utf8;"
   });
   saveAs(blob, "csid.ics");
+}
+
+function eventMenu(id) {
+  var elem = $("#" + id)[0];
+  actionEventMenu(elem, elem.getAttribute("name"));
 }
 
 function actionEventMenu(node, venue) {
@@ -477,13 +533,17 @@ function actionEventMenu(node, venue) {
   });
   $("#event-link").bind("click", function() {
     closeColorbox();
-    if (phoneGap && device.platform != "Android")
-      window.open(this.href, "_system", "location=no");
-    else
-      document.location.href = this.href;
+    followLink(this.href);
     return false;
   });
   addScrollActions();
+}
+
+function followLink(src) {
+  if (phoneGap && device.platform != "Android")
+    window.open(src, "_system", "location=no");
+  else
+    document.location.href = src;
 }
 
 function actionVenueMenu(name) {
@@ -742,7 +802,7 @@ function miscMenu() {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
   }
-  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a><a href='#' id='list-closest'>List the Closest Events Today</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
@@ -758,13 +818,15 @@ function miscMenu() {
   var aboutPage = function() {
     closeColorbox();
     var url = "http://lars.ingebrigtsen.no/2013/09/22/crowdsourcing-is-dead/";
-    if (phoneGap && device.platform != "Android")
-      window.open(url, "_system", "location=no");
-    else
-      document.location.href = url;
+    followLink(url);
     return false;
   };
   $("#about").bind("click", aboutPage);
+  $("#show-map").bind("click", showMap);
+  $("#list-closest").bind("click", function() {
+    limitedDisplay = true;
+    sortByDistance();
+  });
   $("#add-venue").bind("click", function() {
     colorbox("<a href='#' id='add'>To request a new venue, click here and leave a comment on the blog page.</a>");
     $("#add").bind("click", aboutPage);
@@ -933,7 +995,6 @@ function chooseDate() {
       $("table").show();
       $(".pika-single").remove();
       var first = false;
-      //var tr = $("tr[date=" + iso + "]")[0];
       $("tr").each(function(key, node) {
 	var dat = node.getAttribute("date");
 	if (dat && dat == iso && ! first)
@@ -944,12 +1005,19 @@ function chooseDate() {
       else {
 	closeColorbox();
 	$('html, body').animate({
-          scrollTop: $(first).prev().offset().top
+          scrollTop: $(first).prev().offset().top - 38
 	}, 2000);
       }
     }
   });
   document.body.appendChild(picker.el);
+  // Ensure that the calendar is visible if the page is scrolled.
+  var box = $(".pika-single");
+  box.style.position = "absolute";
+  box.style.left = "0px";
+  box.style.top = $(window).scrollTop() + "px";
+  box.style.height = $(window).height() + "px";
+  box.style.width = $(window).width() + "px";
   return false;
 }
 
@@ -978,16 +1046,20 @@ function exportEvent(id) {
 }
 
 function restoreTable() {
+  $(".distance").remove();
+  $("tr").removeClass("invisible");
   if (limitedDisplay) {
     hideShow();
     limitedDisplay = false;
   }
   return;
+  /*
   var parent = $("table")[0].parentNode;
   $("table").remove();
   parent.appendChild(savedTable.clone({withDataAndEvents: true})[0]);
   if (! phoneGap)
     loadLogos(true);
+  */
 }
 
 function shareEvent(id) {
@@ -1015,4 +1087,137 @@ function allVenues() {
       venues[i++] = node.id;
   });
   return venues;
+}
+
+function showMap() {
+  var box = document.createElement("div");
+  box.style.position = "absolute";
+  box.style.left = "0px";
+  box.style.top = $(window).scrollTop() + "px";
+  box.style.width = $(window).width() + "px";
+  box.style.height = $(window).height() + "px";
+  box.style.display = "block";
+  box.style.background = "grey";
+  box.style.padding = "0px";
+  box.id = "box";
+  var heading = document.createElement("div");
+  heading.innerHTML = "Close";
+  heading.className = "map-heading";
+  var map = document.createElement("div");
+  map.style.width = $(window).width() + "px";
+  map.style.height = window.innerHeight + "px";
+  map.id = "map";
+  box.appendChild(heading);
+  box.appendChild(map);
+  document.body.appendChild(box);
+  $(heading).click(function() {
+    $(box).remove();
+  });
+  var script = document.createElement("script");
+  script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
+  document.body.appendChild(script);
+}
+
+function initMap() {
+  var markerSize = { x: 22, y: 40 };
+
+  google.maps.Marker.prototype.setLabel = function(label) {
+    this.label = new MarkerLabel({
+      map: this.map,
+      marker: this,
+      text: label
+    });
+    this.label.bindTo('position', this, 'position');
+  };
+
+  var MarkerLabel = function(options) {
+    this.setValues(options);
+    this.span = document.createElement('span');
+    this.span.className = 'map-marker-label';
+    $(this.span).click(function() {
+      if (options.marker.eventId)
+	eventMenu(options.marker.eventId);
+    });
+  };
+
+  MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
+    onAdd: function() {
+      this.getPanes().overlayImage.appendChild(this.span);
+      var self = this;
+      this.listeners = [
+        google.maps.event.addListener(this, 'position_changed', function() {
+	  self.draw();
+	})];
+    },
+    draw: function() {
+      var text = String(this.get('text'));
+      var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
+      this.span.innerHTML = text;
+      this.span.style.left = (position.x - (markerSize.x / 2)) - (text.length * 3) + 10 + 'px';
+      this.span.style.top = (position.y - markerSize.y + 40) + 'px';
+    }
+  });
+
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 14,
+    center: {lat: homePos[0], lng: homePos[1]}
+  });
+  var pos = collectPositions();
+  pos["here"] = ["You are here", "here", homePos[0], homePos[1]];
+  for (var key in pos) {
+    var venue = pos[key];
+    var marker = new google.maps.Marker({
+      map: map,
+      position: {lat: venue[2], lng: venue[3]},
+      label: venue[0],
+      eventId: venue[4],
+      icon: 'pixel.png',
+      draggable: false
+    });
+  };
+}
+
+function collectPositions() {
+  var today = new Date().toISOString().substring(0, 10);
+  var pos = [];
+  $("tr").each(function(key, node) {
+    var dat = node.getAttribute("date");
+    if (dat && dat == today) {
+      var venue = node.getAttribute("name");
+      var event = node.childNodes[0].childNodes[0].innerHTML;
+      if (locations[venue]) {
+	if (pos[venue])
+	  pos[venue][0] += "<br>" + event;
+	else {
+	  pos[venue] = [event, venue, locations[venue][0],
+			locations[venue][1],
+			node.id
+		       ];
+	}
+      }
+    }
+  });
+  return pos;
+}
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+  ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180);
+}
+
+function distance(a, b) {
+  return getDistanceFromLatLonInKm(a[0], a[1], b[0], b[1]);
 }
