@@ -182,6 +182,7 @@ function addNavigation() {
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
   */
+  showMap();
 }
 
 function addVenue(name, deniedVenues) {
@@ -537,7 +538,6 @@ function actionEventMenu(node, venue) {
     followLink(this.href);
     return false;
   });
-  addScrollActions();
 }
 
 function followLink(src) {
@@ -596,7 +596,6 @@ function actionVenueMenu(name) {
     closeColorbox();
     return false;
   });
-  addScrollActions();
 }
 
 function showVenueChooser() {
@@ -635,7 +634,6 @@ function showVenueChooser() {
   };
   $("div.venue-top").bind("click", func);
   $("#csid-close").bind("click", func);
-  removeScrollActions();
 }
 
 function addLogos() {
@@ -750,31 +748,6 @@ function setCookie(c_name, value, expiredays) {
   return localStorage.setItem(c_name, value);
 }
 
-function addScrollActions() {
-  $(window).bind('touchmove', function(e) {
-    e.preventDefault();
-  });
-  return;
-  if (! phoneGap || device.platform == "iOS")
-    return;
-  removeScrollActions();
-  $(window).on("touchmove", function() {
-    closeColorbox();
-    return true;
-  });
-  $(window).on("scroll", function() {
-    closeColorbox();
-    return true;
-  });
-}
-
-function removeScrollActions() {
-  $(window).unbind('touchmove');
-  return;
-  $(window).off("touchmove");
-  $(window).off("scroll");
-}
-
 function setHardWidths() {
   if (device.platform != "iOS")
     return;
@@ -809,7 +782,9 @@ function miscMenu() {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
   }
-  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a><a href='#' id='list-closest'>List the Closest Events Today</a><a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
+	   (phoneGap? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
+	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   restoreString +
@@ -931,7 +906,6 @@ function miscMenu() {
   $("#csid-close").bind("click", func);
   $("#cboxLoadedContent").bind("click", func);
   document.addEventListener("backbutton", func, false);
-  addScrollActions();
 }
 
 function searchEvents() {
@@ -965,9 +939,9 @@ function colorbox(html) {
     box = false;
   }
   box = document.createElement("div");
-  box.style.position = "absolute";
+  box.style.position = "fixed";
   box.style.left = "0px";
-  box.style.top = $(window).scrollTop() + "px";
+  box.style.top = "0px";
   box.style.height = $(window).height() + "px";
   box.style.width = $(window).width() + "px";
   box.style.display = "block";
@@ -1025,9 +999,9 @@ function chooseDate() {
   document.body.appendChild(picker.el);
   // Ensure that the calendar is visible if the page is scrolled.
   var box = $(".pika-single");
-  box.style.position = "absolute";
+  box.style.position = "fixed";
   box.style.left = "0px";
-  box.style.top = $(window).scrollTop() + "px";
+  box.style.top = "0px";
   box.style.height = $(window).height() + "px";
   box.style.width = $(window).width() + "px";
   return false;
@@ -1121,9 +1095,9 @@ function showMapCont(sp, hp) {
   startPos = sp;
   herePos = hp;
   var box = document.createElement("div");
-  box.style.position = "absolute";
+  box.style.position = "fixed";
   box.style.left = "0px";
-  box.style.top = $(window).scrollTop() + "px";
+  box.style.top = "0px";
   box.style.width = $(window).width() + "px";
   box.style.height = $(window).height() + "px";
   box.style.display = "block";
@@ -1131,31 +1105,29 @@ function showMapCont(sp, hp) {
   box.style.padding = "0px";
   box.id = "box";
   var heading = document.createElement("div");
-  heading.innerHTML = "Close";
+  heading.innerHTML = "<span id='hide-labels'>Hide Events</span><span id='show-labels'>Show Events</span><span id='close-map'>Close Map</span>";
   heading.className = "map-heading";
   var map = document.createElement("div");
   map.style.width = $(window).width() + "px";
-  map.style.height = window.innerHeight + "px";
+  map.style.height = window.innerHeight - 30 + "px";
   map.id = "map";
-  box.appendChild(heading);
   box.appendChild(map);
+  box.appendChild(heading);
   document.body.appendChild(box);
   var func = function() {
     $(box).remove();
-    removeScrollActions();
     document.removeEventListener("backbutton", func);
   };
-  $(heading).click(func);
+  $('#close-map').click(func);
+  $('#show-labels').click(showLabels);
+  $('#hide-labels').click(hideLabels);
   var script = document.createElement("script");
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);
   document.addEventListener("backbutton", func, false);
-  addScrollActions();
 }
 
 function initMap() {
-  var markerSize = { x: 22, y: 40 };
-
   google.maps.Marker.prototype.setLabel = function(label) {
     this.label = new MarkerLabel({
       map: this.map,
@@ -1188,8 +1160,8 @@ function initMap() {
       var text = String(this.get('text'));
       var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
       this.span.innerHTML = text;
-      this.span.style.left = (position.x - (markerSize.x / 2)) - (text.length * 3) + 10 + 'px';
-      this.span.style.top = (position.y - markerSize.y + 40) + 'px';
+      this.span.style.left = (position.x - 50) + 'px';
+      this.span.style.top = position.y + 'px';
     }
   });
 
@@ -1197,6 +1169,14 @@ function initMap() {
     zoom: 14,
     center: {lat: startPos[0], lng: startPos[1]}
   });
+  var markerImage = new google.maps.MarkerImage('cross.png',
+						new google.maps.Size(20, 20),
+						new google.maps.Point(0, 0),
+						new google.maps.Point(10, 10));
+  var homeImage = new google.maps.MarkerImage('home-cross.png',
+					      new google.maps.Size(20, 20),
+					      new google.maps.Point(0, 0),
+					      new google.maps.Point(10, 10));
   var pos = collectPositions();
   if (herePos)
     pos["here"] = ["You are here", "here", herePos[0], herePos[1]];
@@ -1207,11 +1187,17 @@ function initMap() {
       position: {lat: venue[2], lng: venue[3]},
       label: venue[0] + "<span>" + venue[1] + "</span>",
       eventId: venue[4],
-      icon: 'pixel.png',
+      icon: (key == "here"? homeImage: markerImage),
       draggable: false
     });
     if (key == "here")
       var hereMarker = marker;
+    var cFunc = function(id) {
+      return function() {
+	eventMenu(id);
+      };
+    };
+    marker.addListener('click', cFunc(venue[4]));
   };
   if (herePos && map.getBounds().contains(hereMarker.getPosition()))
     map.setCenter(herePos);
@@ -1229,7 +1215,7 @@ function collectPositions() {
 	if (pos[venue])
 	  pos[venue][0] += "<br>" + event;
 	else {
-	  pos[venue] = [event, venue,
+	  pos[venue] = [event, venue.replace(/_/, " "),
 			parseFloat(node.getAttribute("lat")),
 			parseFloat(node.getAttribute("lng")),
 			node.id
@@ -1262,3 +1248,12 @@ function deg2rad(deg) {
 function distance(a, b) {
   return getDistanceFromLatLonInKm(a[0], a[1], b[0], b[1]);
 }
+
+function showLabels() {
+  $(".map-marker-label").show();
+}
+
+function hideLabels() {
+  $(".map-marker-label").hide();
+}
+

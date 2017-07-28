@@ -333,10 +333,12 @@ div.apps {
   display: block;
   text-align: center;
   position: absolute;
+  width: 100px;
+  border: 1px solid black;
   color: black;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
-  background-color: white;
+  background: rgba(255, 255, 255, 0.7);
   padding: 5px;
   border-radius: 5px;
 }
@@ -353,6 +355,10 @@ div.map-heading {
   color: white;
   font-weight: bold;
   padding-top: 8px;
+}
+div.map-heading span {
+  padding-left: 10px;
+  padding-right: 10px;
 }
 div.distance {
   font-weight: normal !important;
