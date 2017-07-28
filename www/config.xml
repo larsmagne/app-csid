@@ -41,6 +41,8 @@
 
     <gap:plugin name="cordova-plugin-geolocation" source="npm" />
     
+    <preference name="Orientation" value="portrait" />
+    
     <preference name="fullscreen" value="false" />
     
     <access origin="*" />
