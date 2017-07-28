@@ -2,7 +2,8 @@ var reveal = false;
 var phoneGap = false;
 var sortOrder = "date";
 var savedTable = false;
-var homePos = [59.915430, 10.751862];
+var sentrum = [59.915430, 10.751862];
+var homePos = sentrum;
 
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
@@ -182,7 +183,6 @@ function addNavigation() {
   if (! savedTable)
     savedTable = $("table").clone({withDataAndEvents: true});
   */
-  showMap();
 }
 
 function addVenue(name, deniedVenues) {
@@ -1167,7 +1167,7 @@ function initMap() {
 
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
-    center: {lat: startPos[0], lng: startPos[1]}
+    center: {lat: sentrum[0], lng: sentrum[1]}
   });
   var markerImage = new google.maps.MarkerImage('cross.png',
 						new google.maps.Size(20, 20),
@@ -1179,13 +1179,13 @@ function initMap() {
 					      new google.maps.Point(10, 10));
   var pos = collectPositions();
   if (herePos)
-    pos["here"] = ["You are here", "here", herePos[0], herePos[1]];
+    pos["here"] = ["You are here", false, herePos[0], herePos[1]];
   for (var key in pos) {
     var venue = pos[key];
     var marker = new google.maps.Marker({
       map: map,
       position: {lat: venue[2], lng: venue[3]},
-      label: venue[0] + "<span>" + venue[1] + "</span>",
+      label: venue[0] + (venue[1]? "<span>" + venue[1] + "</span>": ""),
       eventId: venue[4],
       icon: (key == "here"? homeImage: markerImage),
       draggable: false
