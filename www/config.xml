@@ -93,7 +93,7 @@
     <!-- Retina iPad -->
 
     <gap:plugin name="cordova-plugin-splashscreen" source="npm" />
-    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreen" value="splash" />
     <preference name="SplashScreenDelay" value="0" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <splash src="splash.png" />
