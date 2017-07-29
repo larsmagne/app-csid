@@ -407,6 +407,16 @@ function sortByScanOrder() {
 }
 
 function sortByDistance() {
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    homePos = [pos.coords.latitude, pos.coords.longitude];
+    sortByDistanceCont();
+  }, function() {
+    // On failure to get the position, just center somewhere.
+    colorbox("Unable to get the current location.");
+  });
+}
+
+function sortByDistanceCont() {
   var today = new Date().toISOString().substring(0, 10);
   var trs = [];
   var count = 0;
@@ -942,8 +952,8 @@ function colorbox(html) {
   box.style.position = "fixed";
   box.style.left = "0px";
   box.style.top = "0px";
-  box.style.height = $(window).height() + "px";
-  box.style.width = $(window).width() + "px";
+  box.style.height = window.innerHeight + "px";
+  box.style.width = window.innerWidth + "px";
   box.style.display = "block";
   box.style.background = "#105010";
   box.style.color = "black";
@@ -1114,9 +1124,11 @@ function showMapCont(sp, hp) {
   box.appendChild(map);
   box.appendChild(heading);
   document.body.appendChild(box);
-  var func = function() {
+  var func = function(e) {
     $(box).remove();
     document.removeEventListener("backbutton", func);
+    e.preventDefault();
+    return;
   };
   $('#close-map').click(func);
   $('#show-labels').click(showLabels);
