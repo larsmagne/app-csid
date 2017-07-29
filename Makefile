@@ -34,5 +34,4 @@ release-android:
 copy:
 	rsync -av ../csid/csid.js ../csid/csid.css ../csid/pixel.png www/
 	rsync -av ../csid/cross.png ../csid/home-cross.png www/
-	rsync -av ../csid/menu.svg www/
 	rsync -av ../csid/logos/larger ../csid/logos/thumb www/logos
