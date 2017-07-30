@@ -6,7 +6,7 @@ $.support.cors = true;
 function splash() {
   document.addEventListener("backbutton", function() {
     if ($("#csid-close").length)
-      $.colorbox.close();
+      closeColorbox();
     else if (limitedDisplay) {
       restoreTable();
       limitedDisplay = false;
