@@ -7,7 +7,10 @@ function splash() {
   document.addEventListener("backbutton", function() {
     if ($("#csid-close").length)
       $.colorbox.close();
-    else
+    else if (limitedDisplay) {
+      restoreTable();
+      limitedDisplay = false;
+    } else
       navigator.app.exitApp();
     return false;
   }, false);
