@@ -5,9 +5,10 @@ $.support.cors = true;
 
 function splash() {
   document.addEventListener("backbutton", function() {
-    if ($("#csid-close").length)
+    if ($("#csid-close").length) {
+      $("table").show();
       closeColorbox();
-    else if (limitedDisplay) {
+    } else if (limitedDisplay) {
       restoreTable();
       limitedDisplay = false;
     } else
