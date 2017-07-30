@@ -618,6 +618,7 @@ function showVenueChooser() {
   });
   venues += "<a href='#' id='csid-close'>Close</a>";
   colorbox(venues);
+  box.style.position = "absolute";
   $("table").hide();
   $("div.venue").bind("click", function() {
     var id = $(this).attr("data");
@@ -797,9 +798,9 @@ function miscMenu() {
 	   restoreString +
 	   goingString +
 	   pgString +
+	   "<a href='#' id='csid-close'>Close</a>" +
 	   "<a href='#' id='add-venue'>Add Venue</a><a href='#' id='about'>About</a>" +
-	   appString +
-	   "<a href='#' id='csid-close'>Close</a>");
+	   appString);
   $("#show-venues").bind("click", function() {
     showVenueChooser();
     return false;
