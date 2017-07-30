@@ -8,6 +8,8 @@ function splash() {
     if ($("#csid-close").length) {
       $("table").show();
       closeColorbox();
+    } else if ($("#box").length) {
+      $("#box").remove();
     } else if (limitedDisplay) {
       restoreTable();
       limitedDisplay = false;
