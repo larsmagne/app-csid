@@ -115,6 +115,10 @@
       <splash src="splash-2208.png" width="2208" height="1242"/>
     </platform>
 
+    <platform name="android">
+      <preference name="android-minSdkVersion" value="23" />
+    </platform>
+    
     <gap:config-file platform="android" parent="/manifest">
       <supports-screens 
           android:xlargeScreens="true" 
