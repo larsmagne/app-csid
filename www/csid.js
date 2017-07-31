@@ -5,7 +5,6 @@ var savedTable = false;
 var sentrum = [59.915430, 10.751862];
 var homePos = sentrum;
 
-
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
 function getSettings(name) {
@@ -1022,8 +1021,6 @@ function exportEvent(id) {
   var endDate = new Date(date[0], date[1] - 1, date[2], 20, 00, 0, 0, 0);
 
   var success = function(message) {
-    colorbox("<a href='#' id='csid-close'>Added event " + title +
-	     " to calendar</a>");
   };
   var error = function(message) {
     alert("Unable to export event: " + message);
@@ -1084,25 +1081,10 @@ function allVenues() {
   return venues;
 }
 
-function showMap() {
-  if (phoneGap) 
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      homePos = [pos.coords.latitude, pos.coords.longitude];
-      showMapCont(homePos, homePos);
-    }, function() {
-      // On failure to get the position, just center somewhere.
-      showMapCont(homePos, false);
-    });
-  else
-    showMapCont(homePos, false);
-}
-
 var startPos = homePos;
 var herePos = false;
 
-function showMapCont(sp, hp) {
-  startPos = sp;
-  herePos = hp;
+function showMap() {
   var box = document.createElement("div");
   box.style.position = "fixed";
   box.style.left = "0px";
@@ -1131,6 +1113,25 @@ function showMapCont(sp, hp) {
   $('#close-map').click(func);
   $('#show-labels').click(showLabels);
   $('#hide-labels').click(hideLabels);
+  showMapPos();  
+}
+
+function showMapPos() {
+  if (phoneGap) 
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      homePos = [pos.coords.latitude, pos.coords.longitude];
+      showMapCont(homePos, homePos);
+    }, function() {
+      // On failure to get the position, just center somewhere.
+      showMapCont(homePos, false);
+    });
+  else
+    showMapCont(homePos, false);
+}
+
+function showMapCont(sp, hp) {
+  startPos = sp;
+  herePos = hp;
   var script = document.createElement("script");
   script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
   document.body.appendChild(script);
@@ -1212,10 +1213,12 @@ function initMap() {
     };
     marker.addListener('click', cFunc(venue[4]));
   };
-  // Rescale the map to display all the events.
-  map.fitBounds(bounds);
   if (herePos && map.getBounds().contains(hereMarker.getPosition()))
     map.setCenter(herePos);
+  else
+    map.setCenter(startPos);
+  // Rescale the map to display all the events.
+  map.fitBounds(bounds);
 }
 
 function collectPositions() {
