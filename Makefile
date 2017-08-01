@@ -35,3 +35,4 @@ copy:
 	rsync -av ../csid/csid.js ../csid/csid.css ../csid/pixel.png www/
 	rsync -av ../csid/cross.png ../csid/home-cross.png www/
 	rsync -av ../csid/logos/larger ../csid/logos/thumb www/logos
+	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
