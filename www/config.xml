@@ -96,7 +96,7 @@
     <icon src="icon-57.png" gap:platform="ios" width="57" height="57" />
     <icon src="icon-57x2.png" gap:platform="ios" width="114" height="114" />
     <icon src="icon-72.png" gap:platform="ios" width="72" height="72" />
-    <icon src="icon-72x2.png" gap:platform="ios" width="114" height="114" />
+    <icon src="icon-72x2.png" gap:platform="ios" width="144" height="144" />
     <icon src="icon-83.5x2.png" gap:platform="ios" width="167" height="167" />
     <!-- Retina iPad -->
 
