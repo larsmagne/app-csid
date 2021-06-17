@@ -58,7 +58,7 @@ var base = "http://csid.no";
 
 function loadData() {
   $.ajax({
-    url: "http://csid.no/index.html?ts=" + Date.now(),
+    url: "https://csid.no/index.html?ts=" + Date.now(),
     dataType: "text",
     success: function(data) {
       var div = document.createElement("div");
@@ -71,7 +71,7 @@ function loadData() {
 	document.body.innerHTML = "";
 	document.body.appendChild(div);
 	addNavigation();
-	saveCache(data);
+	//saveCache(data);  Doesn't work on IOS.
 	loadTime = Date.now();
       };
       // If we're reloading, just display immediately.
@@ -126,6 +126,10 @@ function displayCache(text, error) {
 	      close: "Close",
 	      transition: "none",
 	      className: "event-lightbox"});
+}
+
+function showMessage(text) {
+  document.body.innerHTML = "<div class='message'>" + text + "</div>";
 }
 
 function displayCacheFailure() {
