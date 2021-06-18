@@ -1,30 +1,54 @@
 body {
   background: white;
-  text: black;
-  font-family: arial, sans-serif;
-  max-width: 1000px;
+  color: black;
+  font-family: 'Roboto', sans-serif;
 }
+
 div#body-container {
-  overflow: hidden;
+  width: 1000px;
+  flex-basis: 1000px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 table.events {
-  border-collapse: collapse;
-  max-width: 800px;
-  float: left;
+  border-collapse: separate;
+  border-spacing: 0px;
+  width: 800px;
+  display: inline-block;
+  table-layout: fixed;
+}
+col.band {
+  width: 600px;
+}
+col.venue {
+  width: 140px;
+}
+col.button {
+  width: 60px;
 }
 div#selector {
   padding-bottom: 10px;
-  margin-left: 10px;
-  width: 140px;
-  float: right;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 180px;
+  display: inline-block;
+  background: #c0c0c0;
+  vertical-align: top;
 }
 table.events tr td {
   vertical-align: middle;
 }
+table.events tr.date td {
+  vertical-align: middle;
+  font-weight: bold;
+}
+table.events tr td a {
+  padding: 8px;
+}
 p {
 }
 table.events td {
-  padding: 0px;
+  padding: 10px;
   vertical-align: middle;
 }
 img#logo {
@@ -40,23 +64,12 @@ a {
 }
 table.events tr {
   cursor: pointer;
-  background: -ms-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: -moz-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: -o-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F0F0F0), color-stop(1, #E0E0E0));
-  background: -webkit-linear-gradient(top, #F0F0F0 0%, #E0E0E0 100%);
-  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 100%);
-  height: 45px;
+  background: linear-gradient(to bottom, #F0F0F0 0%, #E0E0E0 45px);
 }
 table.events tr.checked {
   vertical-align: middle;
   cursor: pointer;
-  background: -ms-linear-gradient(top, #80F080 0%, #80E080 100%);
-  background: -moz-linear-gradient(top, #80F080 0%, #80E080 100%);
-  background: -o-linear-gradient(top, #80F080 0%, #80E080 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #80F080), color-stop(1, #80E080));
-  background: -webkit-linear-gradient(top, #80F080 0%, #80E080 100%);
-  background: linear-gradient(to bottom, #80F080 0%, #80E080 100%);
+  background: linear-gradient(to bottom, #70d070 0%, #50a050 45px);
 }
 table.events td > a {
   width: 100%;
@@ -66,10 +79,38 @@ table.events td > a {
   margin: 0px;
 }
 table.events tr.date {
-  background: #800000;
+  background: #000060;
   color: white;
   height: 30px;
+  background-repeat: no-repeat;
+  background-position: 10px 0px;
 }
+.expand {
+  background-image: url("expand1x.png") !important;
+  background-image: -webkit-image-set(
+    url("expand1x.png") 1x,
+    url("expand2x.png") 2x
+  ) !important;
+}
+.collapse {
+  background-image: url("collapse1x.png") !important;
+  background-image: -webkit-image-set(
+    url("collapse1x.png") 1x,
+    url("collapse2x.png") 2x
+  ) !important;
+}
+
+
+
+@media (min-resolution: 192dpi) {
+  .expand {
+    background-image: url("expand2x.png");
+  }
+  .collapse {
+    background-image: url("collapse2x.png");
+  }
+}
+
 table.events tr.date td {
   text-align: right;
   padding-right: 8px;
@@ -82,6 +123,8 @@ table.events tr td:first-child {
 }
 table.events tr td:nth-child(2) {
   white-space: nowrap;
+  padding-top: 0px;
+  padding-bottom: 0px;
   padding-left: 10px;
   font-weight: bold;
   overflow: hidden;
@@ -89,35 +132,36 @@ table.events tr td:nth-child(2) {
   max-width: 100px;
   min-width: 100px;
 }
+div.wrapper {
+  width: 100%;
+  text-align: center;
+}
 div.help {
+  display: inline-block;
   max-width: 500px;
-  background: white;
+  background: linear-gradient(to bottom, #F0F0F0 0%, #a0a0a0 100%);
+  padding: 10px;
+  border-radius: 5px;
 }
 div.help a {
   display: inline;
   color: black;
   text-decoration: none;
   font-weight: bold;
-  background: white;
+  background: transparent !important;
   padding: 0px;
 }
 
-div.help {
-  max-width: 500px;
-  background: white;
-}
-div.help a {
-  display: inline;
-  color: black;
-  text-decoration: none;
-  font-weight: bold;
-  background: white;
-}
 
 span.venue {
-  padding-right: 10px;
+  width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
+}
+span.venue input {
+  vertical-align: middle;
 }
 table.events td.show {
   padding-left: 15px;
@@ -128,31 +172,58 @@ div.export {
   padding-top: 10px;
   margin-left: 3px;
 }
+div.select-elem {
+  padding-top: 5px;
+  padding-bottom: 20px;
+  cursor: pointer;
+}
 div.export a {
   cursor: pointer;
 }
 
-/* Center everything */
-html, body {
-  height: 100%;
+input#dark {
+  vertical-align: middle;
 }
-html {
-  display: table;
-  margin: auto;
+span.dark-name {
+  font-weight: bold;
 }
-body {
-  display: table-cell;
+label.dark-wrap {
+  margin-top: 10px;
 }
 span.venue-name {
   cursor: pointer;
   font-weight: bold;
+  vertical-align: middle;
 }
 div.explanation {
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 div#small-heading {
   display: none;
+}
+
+div#large-heading {
+  border: 0px solid black;
+  text-align: center;
+  width: 100%;
+  height: 200px;
+  background-image: url("splash-back1x.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: red;
+  font-family: 'Passion One', cursive;
+  text-shadow: 0px 0px 5px black, 0px 0px 10px black, 0px 0px 20px black;
+}
+
+div#large-heading div.title {
+  padding-top: 30px;
+  font-size: 100px;
+}
+
+div#large-heading div.subtitle {
+  font-size: 20px;
 }
 
 @media only screen and (max-width: 6000px) {
@@ -166,10 +237,22 @@ div#small-heading {
     display: block;
     margin: 0px;
   }
+  div#body-container {
+    width: auto;
+    flex-basis: initial;
+    flex-grow: initial;
+    flex-shrink: initial;
+  }
+  div#leftmargin, div#rightmargin {
+    display: none !important;
+  }
   table.events {
     width: 100%;
     float: none;
     margin-top: 38px;
+  }
+  col.button {
+    display: none;
   }
   div#large-heading {
     display: none;
@@ -181,14 +264,12 @@ div#small-heading {
     width: 100%;
     font-weight: bold;
     text-align: center;
-    background: #3030a0;
-    background: linear-gradient(to bottom, #3030a0 0%, #100150 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #3030a0), color-stop(1, #100150));
-    background: -webkit-linear-gradient(top, #3030a0 0%, #100150 100%);
+    background: linear-gradient(to bottom, #a03030 0%, #500110 100%);
     color: white;
     padding-top: 10px;
     padding-bottom: 10px;
     vertical-align: middle;
+    z-index: 1000;
   }
   div#small-heading a {
     color: white;
@@ -235,16 +316,26 @@ div#small-heading {
     font-weight: bold;
     width: 100%;
   }
+  td.event-text, td#event-image {
+    text-align: center;
+  }
   div.event-text div {
     padding: 20px;
   }
 }
 
 .event-lightbox {
-  padding-top: 0px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  display: block;
+  background: #105010;
+  color: black;
+  padding: 0px;
   padding-bottom: 35px;
   text-align: center;
   background: #105010;
+  z-index: 2000;
 }
 .event-lightbox a {
   text-align: center;
@@ -265,7 +356,7 @@ div#small-heading {
   color: white;
   font: inherit;
   font-weight: bold;
-  font-family: arial, sans-serif;
+  font-family: Roboto, sans-serif;
 }
 .event-lightbox div.search {
   display: block;
@@ -283,7 +374,7 @@ div#small-heading {
   border: 0px;
   color: white;
   font-weight: bold;
-  font-family: arial, sans-serif;
+  font-family: Roboto, sans-serif;
   font-size: inherit;
 }
 .event-lightbox div.venue-top {
@@ -313,7 +404,7 @@ table.events td.thumb-logo {
   vertical-align: middle;
 }
 td.thumb-logo img {
-  vertical-align: middle;
+  padding-top: 3px;
 }
 div.apps {
   padding-top: 10px;
@@ -385,3 +476,208 @@ div#small-menu {
   height: 20px;
   width: 35px;
 }
+div.summary {
+  display: block;
+  height: 200px;
+  position: absolute;
+  left: 0px;
+  overflow: hidden;
+  z-index: 500;
+  background: linear-gradient(to bottom, #E0E0E0 0%, #D0D0D0 100%);
+}
+div.summary div {
+  margin: 10px;
+}
+div.summary img {
+  float: left;
+  padding-right: 20px;
+}
+
+div#event-summary {
+  width: 100%;
+  background-color: white;
+}
+
+div#event-summary table {
+  padding: 0px;
+  margin: 0px;
+  border-collapse: collapse;
+}
+
+div#event-summary table td#event-text {
+  padding: 20px;
+}
+
+div#event-summary table td {
+  margin: 0px;
+}
+
+body {
+  width: 100%;
+  margin: 0px;
+}
+
+html {
+}
+
+div.logo-background {
+  background-color: white;
+  box-shadow: 0px 0px 10px 10px white;
+  position: absolute;
+}
+
+
+ /* Customize the label (the container) */
+.cbcontainer {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+td.show .cbcontainer {
+  height: 5px;
+}
+
+/* Hide the browser's default checkbox */
+.cbcontainer input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  display: none;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #eee;
+  border: 1px solid  #000060;
+}
+
+/* On mouse-over, add a grey background color */
+.cbcontainer:hover input ~ .checkmark {
+  background-color: #fff;
+}
+
+/* When the checkbox is checked, add a blue background */
+.cbcontainer input:checked ~ .checkmark {
+  background-color: #000060;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.cbcontainer input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.cbcontainer .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 3px;
+  height: 7px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+} 
+
+div.event-desktop {
+  background: #303030;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+div.event-desktop > div {
+  background: linear-gradient(to bottom, #E0E0E0 0%, #b0b0b0 100%);
+  max-width: 400px;
+  padding: 30px;
+}
+div.event-desktop > div table tr td {
+  text-align: center;
+  color: black;
+}
+div.event-desktop .outer-venue-logo {
+  margin-top: 20px;
+}
+
+div#body-wrap {
+  display: flex;
+}
+div#leftmargin {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+div#rightmargin {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+div.margin-text {
+  display: block;
+  padding: 5px;
+}
+div#leftmargin > div {
+  margin-left: auto;
+}
+div.margin-wrap {
+  cursor: pointer;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  align-self: auto;
+  height: 1000px;
+  max-width: 200px;
+}
+div.margin-header {
+  padding: 5px;
+  background: #808080;
+  color: white;
+  font-weight: bold;
+}
+div.margin-image-wrap {
+  text-align: center;
+  width: 100%;
+  padding: 5px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: linear-gradient(to bottom, #b0b0b0 0%, #ffffff 100%);
+}
+div.margin-event-wrap {
+  white-space: normal;
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.message {
+    background: white;
+    color: red;
+    width: 300px;
+    display: block;
+    word-wrap: break-word;
+}
+
