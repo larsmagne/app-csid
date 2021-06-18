@@ -16,20 +16,7 @@ create:
 	cordova plugin add cordova-plugin-calendar
 	cordova plugin add cordova-plugin-x-socialsharing
 	cordova plugin add cordova-plugin-slashscreen
-
-release-android:
-	./make-file-list
-	rm -f csid.apk
-	cp www/config.xml www/oconfig.xml
-	sed 's/.CSID--Concerts//' < www/oconfig.xml | egrep -vi 'inappbrowser|geolocation' > www/config.xml
-	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
-	cordova build android --release
-	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1\
-		-keystore ~/src/app-csid/keystore/csid.keystore $(APK)\
-		csid
-	jarsigner -verify -verbose -certs $(APK)
-	zipalign -v 4 $(APK) csid.apk
-	mv www/oconfig.xml www/config.xml
+	cordova plugin add cordova-plugin-androidx
 
 release-ios:
 	./make-file-list
@@ -49,3 +36,18 @@ copy:
 	rsync -av ../csid/logos/larger ../csid/logos/thumb www/logos
 	./make-file-list
 	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
+
+release-android:
+	./make-file-list
+	rm -f csid.apk
+	cp www/config.xml www/oconfig.xml
+	sed 's/.CSID--Concerts//' < www/oconfig.xml | egrep -vi 'inappbrowser|geolocation' > www/config.xml
+	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
+	JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home\
+		PATH=/Users/larsi/Applications/gradle-7.1/bin:${JAVA_HOME}/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin\
+		cordova build android --release --buildConfig build.json
+	cp ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk unsigned.apk
+	jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256\
+		-keystore ./keystore/csid.keystore unsigned.apk\
+		csid
+	/Users/larsi/Library/Android/sdk/build-tools/30.0.3/zipalign -v 4 unsigned.apk csid.apk
