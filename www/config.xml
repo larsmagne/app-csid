@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<widget id="no.ingebrigtsen.csid" version="1.3.10"
-	android-versionCode="102090"
+<widget id="no.ingebrigtsen.csid" version="1.3.12"
+	android-versionCode="103012"
 	xmlns="http://www.w3.org/ns/widgets"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools">
@@ -54,10 +54,15 @@
         <allow-intent href="itms-apps:*" />
     </platform>
 
-    <icon src="csid-icon.png" platform="android" density="ldpi" />
-    <icon src="csid-icon.png" platform="android" density="mdpi" />
-    <icon src="csid-icon.png" platform="android" density="hdpi" />
-    <icon src="csid-icon.png" platform="android" density="xhdpi" />
+    <platform name="android">
+      <resource-file src="colors.xml" target="/app/src/main/res/values/colors.xml" />
+      <icon density="ldpi" background="@color/background" foreground="mats-ldpi.png" />
+      <icon density="mdpi" background="@color/background" foreground="mats-mdpi.png" />
+      <icon density="hdpi" background="@color/background" foreground="mats-hdpi.png" />
+      <icon density="xhdpi" background="@color/background" foreground="mats-xhdpi.png" />
+      <icon density="xxhdpi" background="@color/background" foreground="mats-xxhdpi.png" />
+      <icon density="xxxhdpi" background="@color/background" foreground="mats-xxxhdpi.png" />
+    </platform>
 
     <icon src="csid-icon.png" platform="ios" width="512" height="512" />
     <icon src="csid-icon72.png" platform="ios" width="72" height="72" />
