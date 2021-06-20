@@ -27,6 +27,7 @@
     </feature>
 
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    <preference name="iosPersistentFileLocation" value="Compatibility" />
 
     <feature name="Device">
       <param name="ios-package" value="CDVDevice" onload="true" />
