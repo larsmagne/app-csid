@@ -4,6 +4,7 @@ var sortOrder = "date";
 var savedTable = false;
 var sentrum = [59.915430, 10.751862];
 var homePos = sentrum;
+var mobilep;
 
 var mapKey = "AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw";
 
@@ -28,7 +29,6 @@ var lastVenue = false;
 
 function addNavigation() {
   // Default to not showing quizes.
-  //var defaultDenied = "Quiz,Buckleys,Herr Nilsen,Konserthuset,NB,Olsen,Per på hjørnet,Riksscenen,UiO";
   var defaultDenied = "Quiz";
   if (phoneGap) {
     if (getSettings("deniedVenues") == "")
@@ -38,12 +38,34 @@ function addNavigation() {
       setSettings("deniedVenues", defaultDenied);
   }
 
-  var mobilep = phoneGap || $("body").width() < 600;
+  mobilep = phoneGap || $("body").width() < 600;
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
+  $("#selector").append("<label class='dark-wrap cbcontainer'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><span class='checkmark dark-mark'></span></label><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
 
+  $("#dark").click(function() {
+    var css = document.getElementById("dark-css");
+    if (css.disabled) {
+      css.disabled = false;
+      localStorage.setItem("dark", "enabled");
+    } else {
+      css.disabled = true;
+      localStorage.setItem("dark", "disabled");
+    }
+  });
+
+  var css = document.getElementById("dark-css");
+  if (! getCookie("dark") || getCookie("dark") == "disabled") {
+    css.disabled = true;
+  } else {
+    $("#dark").prop("checked", true);
+    css.disabled = false;
+  }
+  
+  $("#selector").append("<div class='select-elem'><a id='dshow-map'>Show today's events on a map</a></div>");
+  $("#dshow-map").bind("click", showMap);
+  
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
     if (! name)
@@ -52,17 +74,34 @@ function addNavigation() {
     if (! document.getElementById(name))
       addVenue(name, deniedVenues);
 
-    $(node).children("td").first().bind("click", function(e) {
+    var linkClick = function(e) {
       if (! e.ctrlKey) {
+	var link = $(node).find("a");
 	if (mobilep) {
 	  actionEventMenu(node, name);
 	  return false;
-	} else
-	  top.location.href = $(node).find("a").attr("href");
+	} else {
+	  if (! $(link).attr("showSummary")) {
+	    $(link).attr("showSummary", "true");
+	    $(link).blur();
+	    showSummary(node.getAttribute("id"), $(link).attr("href"),
+			function() {
+			  updateExpansion(node);
+			});
+	    return false;
+	  } else {
+	    hideSummary(node, true);
+	    $(link).blur();
+	    return false;
+	  }
+	}
       }
       return true;
-    });
+    };
     
+    $(node).children("td").first().bind("click", linkClick);
+    $(node).find("a").first().bind("click", linkClick);
+
     if (mobilep) {
       $(node).children("td").last().bind("click", function() {
 	actionVenueMenu(name);
@@ -70,7 +109,6 @@ function addNavigation() {
       });
     } else {
       $(node).children("td").last().bind("click", function() {
-	fixPosition();
 	if (lastVenue != name) {
 	  hideShow(name);
 	  lastVenue = name;
@@ -83,10 +121,10 @@ function addNavigation() {
     }
 
     var id = node.id.replace("event-", "");
-    $(node).append("<td class=show><input type=checkbox id='show-" + id + 
+    $(node).append("<td class=show><label class='cbcontainer'><input type=checkbox id='show-" + id + 
 		   "' " + 
 		   ($.inArray(id, shows) == -1? "": "checked") +
-		   ">");
+		   "><span class='checkmark' title=\"I'm going\"></span></label>");
     if ($.inArray(id, shows) != -1)
       $("#event-" + id).addClass("checked");
     $("#show-" + id).bind("click", function(e) {
@@ -97,18 +135,25 @@ function addNavigation() {
   // Add a virtual "quiz" venue.
   addVenue("Quiz", deniedVenues);
 
+  $(".venue-checkmark").click(function() {
+    var checkbox = $(this.parentNode).find("input")[0];
+    checkbox.checked = !checkbox.checked;
+    hideShow();
+    setVenueCookie();
+  });
+  
   // Sort all the venues.
   $("#selector")
-    .children("span")
+    .children("span.venue")
     .sort(function(a, b) {
-      return $(a).find("span").attr("id")
-	.localeCompare($(b).find("span").attr("id"));
+      return $(a).find("span.venue-name").attr("id")
+	.localeCompare($(b).find("span.venue-name").attr("id"));
     })
     .detach()
     .appendTo("#selector");
 
   hideShow();
-  
+
   var visible = "invisible";
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
     visible = "";
@@ -118,7 +163,7 @@ function addNavigation() {
     exportShows();
   });
 
-  $("#selector").append("<div class='export'><a id='sort'>List event in scan order</a></div>");
+  $("#selector").append("<div class='export'><a id='sort'>List events in scan order</a></div>");
   $("#sort").bind("click", function() {
     sortByScanOrder();
     addRestoreLink();
@@ -137,10 +182,10 @@ function addNavigation() {
     });
   }
 
-  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a><p><a href='https://www.microsoft.com/en-us/store/apps/concerts-in-oslo/9nblggh6c4lv'><img src='assets/windows.png'></a></div></div>");
+  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a></div></div>");
 
   $("img#logo").bind("click", function() {
-    window.location.href = "http://csid.no/";
+    window.location.href = "https://csid.no/";
   });
 
   $('a#help').bind("click", function() {
@@ -148,7 +193,7 @@ function addNavigation() {
       url: "help.html",
       dataType: "text",
       success: function(data) {
-	colorbox("<div class='help'>" + data + "</div>" +
+	colorbox("<div class='help-wrapper'><div class='help'>" + data + "</div></div>" +
 		 "<a href='#' id='csid-close'>Close</a>");
       }
     });
@@ -178,14 +223,32 @@ function addNavigation() {
   } else {
     addDesktopLogos();
   }
+
+  $("tr.date").click(function() {
+    if (hasSummaries(this)) {
+      hideSummaries(this);
+      $(this).removeClass("collapse");
+      $(this).addClass("expand");
+    } else {
+      showSummaries(this);
+      $(this).removeClass("expand");
+      $(this).addClass("collapse");
+    }
+  });
+
+  $("tr.date").addClass("expand");
+
+  //eventMenu("event-41714");
+  pickAd("#leftmargin");
+  pickAd("#rightmargin");
 }
 
 function addVenue(name, deniedVenues) {
   var checked = "";
   if ($.inArray(name, deniedVenues) == -1)
     checked = "checked";
-  $("#selector").append("<span class='venue'><input type=checkbox " + 
-			checked + " id='" + name + "'><span id='venue-" +
+  $("#selector").append("<span class='venue cbcontainer'><input type=checkbox " + 
+			checked + " id='" + name + "'><span class='checkmark venue-checkmark'></span><span id='venue-" +
 			name + "' class='venue-name'>" +
 			name.replace(/_/g, " ") + "</span></span>");
   $("#" + name).bind("click", function(e) {
@@ -193,7 +256,6 @@ function addVenue(name, deniedVenues) {
     setVenueCookie();
   });
   $("#venue-" + name).bind("click", function(e) {
-    fixPosition();
     if (lastVenue != name) {
       hideShow(name);
       lastVenue = name;
@@ -215,6 +277,8 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
   var maxTimestamp = "";
   var blankTable = true;
 
+  removeAllSummaries();
+  
   // We've gotten an URL with a show list from somebody.
   if (onlyShowsArray)
     onlyShows = onlyShowsArray;
@@ -294,7 +358,6 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
 	     ! document.getElementById("new")) {
       $("#selector").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
       $("#new").bind("click", function() {
-	fixPosition();
 	hideShow(false, $.cookie("timestamp"));
 	$.cookie("timestamp", maxTimestamp, { expires: 10000 });
 	addRestoreLink();
@@ -316,7 +379,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
     }, 2000);
     doneGotoShow = true;
   }
-  
+
   return blankTable;
 }
 
@@ -359,30 +422,12 @@ function setVenueCookie() {
   setSettings("deniedVenues", venues.join());
 }
 
-function fixPosition() {
-  if (phoneGap || $("body").width() < 600)
-    return;
-
-  $("#body-container").each(function(key, body) {
-    var pos = $(body).offset();
-    body.style.position = "absolute";
-    body.style.left = pos.left + "px";
-    body.style.top = pos.top + "px";
-  });
-  $("table").each(function (key, table) {
-    table.width = table.offsetWidth + "px";
-    $(table).find("colgroup").children("col").each(function(key, col) {
-      col.width = col.offsetWidth + "px";
-    });
-  });
-}
-
 function exportShows() {
   var shows = getSettings("shows");
   var visible = [];
   $.map(shows, function(elem) {
     var id = "#event-" + elem;
-    if ($(id)[0] && $(id).is(":visible") )
+    if ($(id)[0] && $(id).is(":visible"))
       visible.push(elem);
   });
   window.location.href = window.location.href.replace(/[?].*/, "") +
@@ -459,7 +504,7 @@ function insertAfter(newNode, referenceNode) {
 }
 
 function addRestoreLink() {
-  $("#selector").append("<div class='export'><a href='http://csid.no/'>Restore list</a></div>");
+  $("#selector").append("<div class='export'><a href='https://csid.no/'>Restore list</a></div>");
 }
 
 function exportCalendar() {
@@ -513,16 +558,14 @@ function actionEventMenu(node, venue) {
       exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
     if (! existingLogos[fixName(venue)])
-      logo = "http://csid.no/logos/larger/" + fixName(venue);
+      logo = "https://csid.no/logos/larger/" + fixName(venue);
   }
-  colorbox("<div class='outer-venue-logo'><img src='" + logo +
-	   ".png' srcset='" + logo +
-	   "x2.png 2x'></div><div class='event-text'><div>" +
-	   $(node).find("a")[0].innerHTML +
-	   "</div></div><a id='event-link' href='" + link +
+  colorbox("<div id='event-summary'><table><tr><td id='event-image'><tr><td id='event-text'></table></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a>" + exportString +
-	   "<a href='#' id='csid-close'>Close</a>");
+	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + logo +
+	   ".png' srcset='" + logo +
+	   "x2.png 2x'></div>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     closeColorbox();
@@ -543,6 +586,23 @@ function actionEventMenu(node, venue) {
     followLink(this.href);
     return false;
   });
+  fetchEventSummary(
+    link,
+    function(data) {
+      var json = $.parseJSON(data);
+      if (json.image) {
+	var image = document.createElement("img");
+	image.src = json.image;
+	var windowWidth = window.innerWidth;
+	// For Chrome on Mobile.
+	if (window.visualViewport)
+	  windowWidth = window.visualViewport.width;
+	if (windowWidth)
+	  image.style.maxWidth = windowWidth / 2;
+	$("#event-image").append(image);
+      }
+      $("#event-text").append(json.summary);
+    });
 }
 
 function followLink(src) {
@@ -565,7 +625,7 @@ function actionVenueMenu(name) {
   var logo = "logos/larger/" + fixName(name);
   if (phoneGap) {
     if (! existingLogos[fixName(name)])
-      logo = "http://csid.no/logos/larger/" + fixName(name);
+      logo = "https://csid.no/logos/larger/" + fixName(name);
   }
   colorbox("<div class='outer-venue-logo'><img src='" + logo +
 	   ".png' srcset='" + logo +
@@ -653,9 +713,9 @@ function addLogos() {
     td.className = "thumb-logo";
 
     if (phoneGap && ! existingLogos[fixName(venue)]) {
-      td.innerHTML = "<img src='http://csid.no/logos/thumb/" +
-	fixName(venue) + ".png' srcset='http://csid.no/logos/thumb/" +
-	fixName(venue) + "x2.png 2x'>";
+      td.innerHTML = "<img src='https://csid.no/logos/thumb/" +
+	fixName(venue) + ".png' srcset='https://csid.no/logos/thumb/" +
+	fixName(venue) + "x2.png 2x'></td>";
     } else {
       td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
 	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
@@ -687,8 +747,21 @@ function addDesktopLogos() {
       focus = true;
       image.onload = function() {
 	if (focus) {
-	  td.innerHTML = "";
-	  td.appendChild(image);
+	  if (getCookie("dark") == "enabled") {
+	    var pos = $(td).offset();
+	    td.innerHTML = "<div class='logo-background'></div>";
+	    var ratio = window.devicePixelRatio;
+	    if (! ratio)
+	      ratio = 1;
+	    $(td.childNodes[0]).css({width: image.width / ratio + "px",
+				     top: pos.top + 28 -
+				     (image.height / ratio / 2) + "px",
+				     left: pos.left + 10 + "px"});
+	    td.childNodes[0].appendChild(image);
+	  } else {
+	    td.innerHTML = "";
+	    td.appendChild(image);
+	  }
 	}
       };
       image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
@@ -727,8 +800,8 @@ function hideDuplicates() {
   var seen = [];
   var shows = getSettings("shows");
   $("tr").each(function(key, node) {
-    var id = node.id.replace(/event-/, "");
-    if (! id)
+    var id = node.id.replace(/^event-/, "");
+    if (! id || id.match(/summary/))
       return;
     var text = node.childNodes[0].childNodes[0].innerHTML;
     if (! text)
@@ -748,7 +821,11 @@ function fixName(name) {
 }
 
 function getCookie(c_name) {
-  return localStorage.getItem(c_name);
+  try {
+    return localStorage.getItem(c_name);
+  } catch(error) {
+    return false;
+  }
 }
 
 function setCookie(c_name, value, expiredays) {
@@ -778,6 +855,7 @@ function miscMenu() {
   var restoreString = "";
   if (limitedDisplay)
     restoreString = "<a href='#' id='restore'>Restore Events</a>";
+  var summaryString = "<a href='#' id='menu-summaries'>Load Summaries</a>";
   var goingString = "";
   $.map(getSettings("shows"), function(id) {
     if ($("#event-" + id).length)
@@ -794,6 +872,7 @@ function miscMenu() {
 	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
+	   summaryString +
 	   restoreString +
 	   goingString +
 	   pgString +
@@ -944,17 +1023,16 @@ function colorbox(html) {
     box = false;
   }
   box = document.createElement("div");
-  box.style.position = "fixed";
-  box.style.left = "0px";
-  box.style.top = "0px";
   box.style.height = window.innerHeight + "px";
   box.style.width = window.innerWidth + "px";
-  box.style.display = "block";
-  box.style.background = "#105010";
-  box.style.color = "black";
-  box.style.padding = "0px";
-  box.className = "event-lightbox";
-  box.innerHTML = html;
+  if (mobilep)
+    box.className = "event-lightbox";
+  else
+    box.className = "event-lightbox event-desktop";
+  var inner = document.createElement("div");
+  inner.className = "lightbox-inner";
+  inner.innerHTML = html;
+  box.appendChild(inner);
   var func = function() {
     closeColorbox();
     return false;
@@ -1066,7 +1144,7 @@ function shareEvent(id) {
    new Date(date[0], date[1] - 1, date[2], 19, 00, 0, 0, 0).toDateString() +
    ".",
    title,
-   //"http://csid.no/logos/larger/" + fixName(venue) + ".png",
+   //"https://csid.no/logos/larger/" + fixName(venue) + ".png",
    null,
    url);
 }
@@ -1085,6 +1163,7 @@ var startPos = homePos;
 var herePos = false;
 
 function showMap() {
+  hideAllSummaries();
   var box = document.createElement("div");
   box.style.position = "fixed";
   box.style.left = "0px";
@@ -1133,7 +1212,8 @@ function showMapCont(sp, hp) {
   startPos = sp;
   herePos = hp;
   var script = document.createElement("script");
-  script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=AIzaSyDOzwQi0pHvnJ1hW__DTC2H4f2qPCr3pWw&callback=initMap");
+  script.setAttribute("src", "https://maps.googleapis.com/maps/api/js?key=" +
+		      mapKey + "&callback=initMap");
   document.body.appendChild(script);
 }
 
@@ -1216,7 +1296,7 @@ function initMap() {
   if (herePos && map.getBounds().contains(hereMarker.getPosition()))
     map.setCenter(herePos);
   else
-    map.setCenter(startPos);
+    map.setCenter({lat: startPos[0], lng: startPos[1]});
   // Rescale the map to display all the events.
   map.fitBounds(bounds);
 }
@@ -1276,3 +1356,342 @@ function hideLabels() {
   $(".map-marker-label").hide();
 }
 
+var summaryQuery = false;
+
+function fetchSummaries(ids, index, callback) {
+  var hash = sha1(ids[index][1]);
+  var url = "summaries/" +
+	hash.substring(0, 3) + "/" + hash.substring(3) +
+	"-data.json";
+  summaryQuery = $.ajax({
+    url: url,
+    dataType: "text",
+    beforeSend: function(xhr){
+      if (xhr.overrideMimeType) {
+	xhr.overrideMimeType("application/json");
+      }
+    },
+    success: function(data) {
+      var json = $.parseJSON(data);
+      insertSummary(ids[index][0], ids[index][1], json);
+      if (callback)
+	callback();
+      if (index + 1 < ids.length)
+	fetchSummaries(ids, index + 1);
+    },
+    error: function(data) {
+      if (data.statusText == "abort")
+	return;
+      insertBlankSummary(ids[index][0], ids[index][1], false);
+      if (index + 1 < ids.length)
+	fetchSummaries(ids, index + 1);
+    }
+  });
+}
+
+function insertSummary(id, url, data) {
+  var tr = document.getElementById(id);
+  // If there's already a summary here, then do nothing.
+  if ($(tr).find("div.summary")[0])
+    return;
+  var td = tr.firstChild;
+  var div = document.createElement("div");
+  div.className = "summary";
+  if (data.image) {
+    var image = document.createElement("img");
+    image.src = data.image;
+    var windowWidth = window.innerWidth;
+    // For Chrome on Mobile.
+    if (window.visualViewport)
+      windowWidth = window.visualViewport.width;
+    if (windowWidth)
+      image.style.maxWidth = windowWidth / 2;
+    div.appendChild(image);
+  }
+  $.map([td, td.nextSibling, td.nextSibling.nextSibling],
+	function(elem) {
+	  $(elem).css({
+	    "border-bottom": "200px solid #a0a0a0",
+	    transition: "border-width 0.3s"
+	  });
+	});
+  var text = document.createElement("div");
+  text.innerHTML = htmlEntities(data.summary);
+  div.style.top = $(tr).height() + "px";
+  div.style.width = $(tr).width() + "px";
+  div.style.opacity = "0";
+  td.style.position = "relative";
+  document.body.appendChild(div);
+
+  $(text).append("<p><a href=\"" + url + "\">Go to the event page</a>");
+  if (image && image.width) {
+    var space = image.width + 10;
+    text.style.width = $(tr).width() - space - 20 + "px";
+    text.style.paddingLeft = space + "px";
+  }
+  div.appendChild(text);
+  td.appendChild(div);
+  $(div).animate({ opacity: 1 });
+  $(div).click(function() {
+    document.location = url;
+    return false;
+  });
+}
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function insertBlankSummary(id, url, data) {
+  var tr = document.getElementById(id);
+  // If there's already a summary here, then do nothing.
+  if ($(tr).find("div.summary")[0])
+    return;
+  var td = tr.firstChild;
+  var div = document.createElement("div");
+  td.style.position = "relative";
+  td.style.borderBottom = "200px solid white";
+  td.nextSibling.style.borderBottom = "200px solid white";
+  td.nextSibling.nextSibling.style.borderBottom = "200px solid white";
+  div.className = "summary";
+  div.style.top = $(tr).height() - 200 + "px";
+  div.style.width = $(tr).width() + "px";
+  document.body.appendChild(div);
+  td.appendChild(div);
+}
+
+function hasSummaries(tr) {
+  tr = tr.nextSibling;
+  while (tr && ! $(tr).hasClass("date")) {
+    if ($(tr).find("div.summary")[0])
+      return true;
+    tr = tr.nextSibling;
+  }
+  return false;
+}
+
+function hideSummaries(tr) {
+  if (summaryQuery)
+    summaryQuery.abort();
+  tr = tr.nextSibling;
+  while (tr && ! $(tr).hasClass("date")) {
+    hideSummary(tr);
+    tr = tr.nextSibling;
+  }
+}
+
+function hideSummary(tr, updateExp) {
+  if ($(tr).find("div.summary")) {
+    var td = tr.firstChild;
+    $.map([td, td.nextSibling, td.nextSibling.nextSibling],
+	  function(elem) {
+	    $(elem).css({
+	      "border-bottom": "0px solid #a0a0a0",
+	      transition: "border-width 0.4s"
+	    });
+	  });
+    $(tr).find("div.summary").animate({ height: "0px"}, 400, "swing",
+				      function() {
+					$(tr).find("div.summary").remove();
+					if (updateExp)
+					  updateExpansion(tr);
+				      });
+    $(td).find("a").attr("showSummary", "");
+  }
+}
+
+function removeAllSummaries() {
+  $("div.summary").each(function(key, node) {
+    $(node.parentNode.parentNode).find("td").css({"border-bottom": "0px"});
+    $(node).remove();
+  });
+}
+
+function showSummary(id, href, callback) {
+  var ids = [];
+  ids.push([id, href]);
+  fetchSummaries(ids, 0, callback);
+}
+
+var fetchedSummaries = [];
+
+function showSummaries(tr, noRepeat) {
+  var ids = [];
+  tr = tr.nextSibling;
+  while (tr && ! $(tr).hasClass("date")) {
+    var id = tr.getAttribute("id");
+    if (id || id.match("event")) {
+      var link = tr.firstChild.firstChild;
+      if (! noRepeat || ! fetchedSummaries[link.href]) {
+	$(link).attr("showSummary", "true");
+	ids.push([id, link.href]);
+	fetchedSummaries[link.href] = true;
+      }
+    }
+    tr = tr.nextSibling;
+  }
+  if (ids.length > 0)
+    fetchSummaries(ids, 0);
+}
+
+function isVisible(node) {
+  var offset = $(node).offset();
+  var windowTop = $(window).scrollTop();
+  return offset.top + 245 > windowTop &&
+    offset.top < windowTop + window.innerHeight * 2;
+}
+
+function hideAllSummaries() {
+  $("tr.date").each(function(key, node) {
+    hideSummaries(node);
+  });
+  fetchedSummaries = [];
+}
+
+function fetchEventSummary(evUrl, callback) {
+  var hash = sha1(evUrl);
+  var url = "https://csid.no/summaries/" +
+      hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
+  summaryQuery = $.ajax({
+    url: url,
+    dataType: "text",
+    beforeSend: function(xhr){
+      if (xhr.overrideMimeType) {
+	xhr.overrideMimeType("application/json");
+      }
+    },
+    success: callback,
+    error: function(data) {
+    }
+  });
+}
+
+function updateExpansion(node) {
+  while (node && ! $(node).hasClass("date"))
+    node = node.previousSibling;
+
+  if (node) {
+    if (hasSummaries(node)) {
+      $(node).removeClass("expand");
+      $(node).addClass("collapse");
+    } else {
+      $(node).removeClass("collapse");
+      $(node).addClass("expand");
+    }
+  }
+}
+
+function doAd(id, venue, margin) {
+  var url = $("#event-" + id).find("a").attr("href");
+  fetchEventSummary(
+    url,
+    function(data) {
+      var slide = false;
+      var width = $(margin).width();
+      // Give up if the margins are too narrow.
+      if (width < 100)
+	return;
+      if (width > 200)
+	width = 200;
+
+      var $wrap = $(margin).find(".margin-wrap");
+      if ($wrap.length == 0) {
+	$(margin).empty();
+	$wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
+	$wrap.css({width: width});
+      } else {
+	slide = true;
+      }
+      var json = $.parseJSON(data);
+      var $ewrap = $("<div class='margin-event-wrap' id='margin-event-" + id +
+		     "'></div>");
+      $ewrap.css({width: width});
+      if (json.image) {
+	var image = document.createElement("img");
+	image.src = json.image;
+	image.width = width + 1;
+	$ewrap.append(image);
+      }
+      var $text = $("<div class='margin-text'>" + json.summary + "</div>");
+      $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
+      $ewrap.append($text);
+
+      var $img = $("<img src='logos/larger/" + fixName(venue) +
+		   ".png' srcset='logos/larger/" + fixName(venue) +
+		   "x2.png 2x'>");
+      $img.css({"max-width": width - 10});
+      var $imgwrap = $("<div class='margin-image-wrap'></div>");
+      $imgwrap.append($img);
+      $imgwrap.css({width: width - 10});
+      $ewrap.append($imgwrap);
+
+      $wrap.append($ewrap);
+      $(margin).append($wrap);
+      $ewrap.click(function() {
+	document.location = url;
+	return false;
+      });
+      if (margin == "#rightmargin") {
+	if (slide)
+	  slideAd(margin);
+	setTimeout(function() {
+	  pickAd(margin);
+	},
+		   10000);
+      }
+    });
+}
+
+function pickAd(margin) {
+  var events = todaysEvents();
+  var picks = [];
+  $.map(events, function(node) {
+    var venue = node.getAttribute("name");
+    if (venue == "KafÃ©_hÃ¦rverk" ||
+	venue == "Konsertforeninga")
+      picks.push(node);
+  });
+  if (picks.length == 0)
+    picks = events;
+  if (margin == "#rightmargin")
+    picks = events;
+  if (picks.length == 1)
+    var event = picks[0];
+  else {
+    for (var i = 0; i < 10; i++) {
+      event = picks[Math.floor(Math.random() * picks.length)];
+      if ($("#margin-" + event.id).length == 0)
+	break;
+    }
+  }
+  doAd(event.id.replace(/event-/, ""), event.getAttribute("name"), margin);
+}
+
+function todaysEvents() {
+  var today = new Date().toISOString().substring(0, 10);
+  var events = [];
+  $("tr").each(function(key, node) {
+    var dat = node.getAttribute("date");
+    if (dat && dat == today)
+      events.push(node);
+  });
+  return events;
+}
+
+function slideAd(margin) {
+  $($(margin + " .margin-event-wrap").get().reverse()).each(function (key, node) {
+    var $elem = $(node);
+    var pos = $elem.position();
+    var headHeight = $elem.find(".margin-header").height();
+    $elem.css({position: (key == 1? "absolute": "relative"),
+	       top: pos.top + (key == 0? -headHeight: 0) + "px",
+	       left: pos.left + "px"});
+    $elem.animate({left: pos.left - $elem.width() - 1 + "px"},
+		  1000, "linear", function() {
+		    if (key == 1)
+		      $elem.remove();
+		    else
+		      $elem.css({position: "static"});
+		  });
+  });
+}
