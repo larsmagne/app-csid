@@ -214,12 +214,9 @@ function addNavigation() {
       loadLogos(mobilep);
     $(window).on("orientationchange", function() {
       closeColorbox();
-      if (phoneGap)
-	setHardWidths();
       return true;
     });
     if (phoneGap) {
-      setHardWidths();
       StatusBar.overlaysWebView(false);
     }
   } else {
