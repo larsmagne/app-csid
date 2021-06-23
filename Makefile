@@ -51,3 +51,11 @@ release-android:
 		-keystore ./keystore/csid.keystore unsigned.apk\
 		csid
 	/Users/larsi/Library/Android/sdk/build-tools/30.0.3/zipalign -v 4 unsigned.apk csid.apk
+
+icon=images/base-icon-1024x1024.png
+icons:
+	for size in 1024 57 72 152 60 120 76 29 58 87 40 80 50 100 114 144 167; do\
+		convert -resize "$${size}x$${size}!" $(icon) \
+		images/icon$${size}.png;\
+	done
+
