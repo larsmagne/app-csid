@@ -61,8 +61,8 @@ var existingLogos = { dummy: true
 , Postkontoret : true
 , Revolver : true
 , Riksscenen : true
-, Rock_In : true
 , Rockefeller : true
+, Rock_In : true
 , Rommen_scene : true
 , Rxverstaden : true
 , Sagene : true

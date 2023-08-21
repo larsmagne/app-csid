@@ -8,3 +8,4 @@ node_modules
 mobile
 package.json
 package-lock.json
+*.aab

@@ -1,3 +1,10 @@
+# Don't install any of the OS versions of npm nodejs gradle android-sdk.
+# Instead get the Android SDK from https://developer.android.com/studio/install
+# Get the Cordova stuff from https://cordova.apache.org/docs/en/latest/guide/cli/
+
+# npm install -g cordova
+
+
 APK=platforms/android/build/outputs/apk/android-release-unsigned.apk
 
 # To create the initial project, check it out and then run "make create",
@@ -6,7 +13,7 @@ create:
 	#cordova create mobile
 	#mv mobile/hooks mobile/platforms mobile/plugins .
 	#rm -r mobile
-	cordova platform add ios
+	cordova platform add android
 	cordova plugin add cordova-plugin-device
 	cordova plugin add cordova-plugin-file
 	cordova plugin add cordova-plugin-geolocation
@@ -43,14 +50,15 @@ release-android:
 	cp www/config.xml www/oconfig.xml
 	sed 's/.CSID--Concerts//' < www/oconfig.xml | egrep -vi 'inappbrowser|geolocation' > www/config.xml
 	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
-	JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home\
-		PATH=/Users/larsi/Applications/gradle-7.1/bin:${JAVA_HOME}/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin\
+	ANDROID_HOME=/home/larsi/Android/Sdk\
 		cordova build android --release --buildConfig build.json
-	cp ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk unsigned.apk
+	cp platforms/android/app/build/outputs/bundle/release/app-release.aab \
+		unsigned.aab
 	jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256\
-		-keystore ./keystore/csid.keystore unsigned.apk\
+		-keystore ./keystore/csid.keystore unsigned.aab\
 		csid
-	/Users/larsi/Library/Android/sdk/build-tools/30.0.3/zipalign -v 4 unsigned.apk csid.apk
+	rm -f csid.aab
+	/home/larsi/Android/Sdk/build-tools/33.0.2/zipalign -v 4 unsigned.aab csid.aab
 
 icon=images/base-icon-1024x1024.png
 icons:
