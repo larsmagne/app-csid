@@ -42,7 +42,8 @@ function addNavigation() {
   var deniedVenues = getSettings("deniedVenues");
   var shows = getSettings("shows");
 
-  $("#selector").append("<label class='dark-wrap cbcontainer'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><span class='checkmark dark-mark'></span></label><div class='explanation'>Everything in <a id='help' href='help.html?1'><b>bold</b></a> is clickable</div>");
+  $("#meta-misc").prepend("<div id='meta-menu'><div class='misc-heading'><div class='small-menu'><span class='box-shadow-menu'></span></div></div><div id='meta-hidden'></div></div>");
+  $("#meta-hidden").append("<div class='export'><span><label class='dark-wrap cbcontainer'><input type=checkbox id='dark'><span class='dark-name'>Dark Mode</span><span class='checkmark dark-mark'></span></label></span></div><div class='export'><span><a id='help' href='help.html?1'>Help</a></span></div>");
 
   $("#dark").click(function() {
     var css = document.getElementById("dark-css");
@@ -63,7 +64,7 @@ function addNavigation() {
     css.disabled = false;
   }
   
-  $("#selector").append("<div class='select-elem'><a id='dshow-map'>Show today's events on a map</a></div>");
+  $("#meta-hidden").append("<div class='export'><span><a id='dshow-map'>Show today's events on a map</a></span></div>");
   $("#dshow-map").bind("click", showMap);
   
   $("tr").each(function(key, node) {
@@ -157,20 +158,20 @@ function addNavigation() {
   var visible = "invisible";
   if ($("tr.checked").length > 0 || window.location.href.match("shows="))
     visible = "";
-  $("#selector").append("<div id='export' class='export " + visible + 
-		       "'><a class='export'>List only chosen events</a></div>");
+  $("#meta-hidden").append("<div id='export' class='export " + visible + 
+			   "'><span><a class='export'>List only chosen events</a></span></div>");
   $("a.export").bind("click", function(e) {
     exportShows();
   });
 
-  $("#selector").append("<div class='export'><a id='sort'>List events in scan order</a></div>");
+  $("#meta-hidden").append("<div class='export'><span><a id='sort'>List events in scan order</a></span></div>");
   $("#sort").bind("click", function() {
     sortByScanOrder();
     addRestoreLink();
   });
 
-  $("#selector").append("<div class='export " + visible +
-			"'><a id='ical'>Export calendar</a></div>");
+  $("#meta-hidden").append("<div class='export " + visible +
+			"'><span><a id='ical'>Export calendar</a></span></div>");
   $("#ical").bind("click", function() {
     exportCalendar();
   });
@@ -182,7 +183,8 @@ function addNavigation() {
     });
   }
 
-  $("#selector").append("<div class='export'><a id='rss' href='csid.atom'>Atom/\RSS feed</a><p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a></div></div>");
+  $("#meta-hidden").append("<div class='export'><span><a id='rss' href='csid.atom'>Atom/\RSS feed</a></span></div>");
+  $("#selector").append("<p><a href='https://itunes.apple.com/us/app/csid-concerts-in-oslo/id1037896784?mt=8&ign-mpt=uo%3D4'><img src='assets/apple.png'></a><p><a href='https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid'><img src='assets/google.png'></a>");
 
   $("img#logo").bind("click", function() {
     window.location.href = "https://csid.no/";
@@ -356,7 +358,7 @@ function hideShow(onlyVenue, onlyAfterTimestamp, onlyEvent,
       $.cookie("timestamp", maxTimestamp, { expires: 10000 });
     else if (maxTimestamp > $.cookie("timestamp") &&
 	     ! document.getElementById("new")) {
-      $("#selector").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
+      $("#meta-hidden").append("<div class='export'><a id='new'>Display events arrived since last time</a></div>");
       $("#new").bind("click", function() {
 	hideShow(false, $.cookie("timestamp"));
 	$.cookie("timestamp", maxTimestamp, { expires: 10000 });
@@ -481,7 +483,7 @@ function sortByDistanceCont() {
       if (meter < 1)
 	d.innerHTML = "you are there";
       else
-	d.innerHTML = "" + meter + " meters";
+	d.innerHTML = "" + meter + " metres";
     } else
       d.innerHTML = "" + Math.round((dist * 10) / 10) + " km";
       
@@ -563,9 +565,8 @@ function actionEventMenu(node, venue) {
   colorbox("<div id='event-summary'><table><tr><td id='event-image'><tr><td id='event-text'></table></div><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a>" + exportString +
-	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + logo +
-	   ".png' srcset='" + logo +
-	   "x2.png 2x'></div>");
+	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + imgur(logo) +
+	   "' srcset='" + imgur2x(logo) + " 2x'></div>");
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     closeColorbox();
@@ -627,9 +628,9 @@ function actionVenueMenu(name) {
     if (! existingLogos[fixName(name)])
       logo = "https://csid.no/logos/larger/" + fixName(name);
   }
-  colorbox("<div class='outer-venue-logo'><img src='" + logo +
-	   ".png' srcset='" + logo +
-	   "x2.png 2x'></div><a href='#' id='venue-limit'>" +
+  colorbox("<div class='outer-venue-logo'><img src='" + imgur(logo) +
+	   "' srcset='" + imgur2x(logo) +
+	   " 2x'></div><a href='#' id='venue-limit'>" +
 	   limit + "</a><a href='#' id='venue-mark'>" + venues +
 	   "</a><a href='#' id='all-venues'>Show all events from all venues</a><a href='#' id='csid-close'>Close</a>");
   $("#venue-limit").bind("click", function() {
@@ -714,11 +715,11 @@ function addLogos() {
 
     if (phoneGap && ! existingLogos[fixName(venue)]) {
       td.innerHTML = "<img src='https://csid.no/logos/thumb/" +
-	fixName(venue) + ".png' srcset='https://csid.no/logos/thumb/" +
-	fixName(venue) + "x2.png 2x'></td>";
+	imgur(fixName(venue)) + "' srcset='https://csid.no/logos/thumb/" +
+	imgur2x(fixName(venue)) + " 2x'></td>";
     } else {
-      td.innerHTML = "<img src='logos/thumb/" + fixName(venue) +
-	".png' srcset='logos/thumb/" + fixName(venue) + "x2.png 2x'>";
+      td.innerHTML = "<img src='logos/thumb/" + imgur(fixName(venue)) +
+	"' srcset='logos/thumb/" + imgur2x(fixName(venue)) + " 2x'>";
     }
   });
 }
@@ -764,8 +765,9 @@ function addDesktopLogos() {
 	  }
 	}
       };
-      image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
-      image.src = "logos/thumb/" + fixName(venue) + ".png";
+      image.setAttribute("srcset", "logos/thumb/" + imgur2x(fixName(venue)) +
+			 " 2x");
+      image.src = "logos/thumb/" + imgur(fixName(venue));
     });
     $(td).mouseleave(function() {
       focus = false;
@@ -792,8 +794,9 @@ function loadLogo(mobilep, venues, index) {
     if (index < (venues.length - 1))
       loadLogo(mobilep, venues, index + 1);
   };
-  image.setAttribute("srcset", "logos/thumb/" + fixName(venue) + "x2.png 2x");
-  image.src = "logos/thumb/" + fixName(venue) + ".png";
+  image.setAttribute("srcset", "logos/thumb/" + imgur2x(fixName(venue)) +
+		     " 2x");
+  image.src = "logos/thumb/" + imgur(fixName(venue));
 }
 
 function hideDuplicates() {
@@ -1360,7 +1363,7 @@ var summaryQuery = false;
 
 function fetchSummaries(ids, index, callback) {
   var hash = sha1(ids[index][1]);
-  var url = "summaries/" +
+  var url = "https://csid.no/summaries/" +
 	hash.substring(0, 3) + "/" + hash.substring(3) +
 	"-data.json";
   summaryQuery = $.ajax({
@@ -1382,6 +1385,9 @@ function fetchSummaries(ids, index, callback) {
     error: function(data) {
       if (data.statusText == "abort")
 	return;
+      /* For now, just open the URL directly when there's no summary. */
+      window.location.href = ids[index][1];
+      return;
       insertBlankSummary(ids[index][0], ids[index][1], false);
       if (index + 1 < ids.length)
 	fetchSummaries(ids, index + 1);
@@ -1550,8 +1556,8 @@ function hideAllSummaries() {
 
 function fetchEventSummary(evUrl, callback) {
   var hash = sha1(evUrl);
-  var url = "https://csid.no/summaries/" +
-      hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
+  var url = "summaries/" +
+	hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
   summaryQuery = $.ajax({
     url: url,
     dataType: "text",
@@ -1597,7 +1603,7 @@ function doAd(id, venue, margin) {
       var $wrap = $(margin).find(".margin-wrap");
       if ($wrap.length == 0) {
 	$(margin).empty();
-	$wrap = $("<div class='margin-wrap'><div class='margin-header'>Today:</div></div>");
+	$wrap = $("<div class='margin-wrap'><div class='margin-header'>Today</div></div>");
 	$wrap.css({width: width});
       } else {
 	slide = true;
@@ -1616,9 +1622,9 @@ function doAd(id, venue, margin) {
       $text.append("<p><a href=\"" + url + "\">Go to the event page</a>");
       $ewrap.append($text);
 
-      var $img = $("<img src='logos/larger/" + fixName(venue) +
-		   ".png' srcset='logos/larger/" + fixName(venue) +
-		   "x2.png 2x'>");
+      var $img = $("<img src='logos/larger/" + imgur(fixName(venue)) +
+		   "' srcset='logos/larger/" + imgur2x(fixName(venue)) +
+		   " 2x'>");
       $img.css({"max-width": width - 10});
       var $imgwrap = $("<div class='margin-image-wrap'></div>");
       $imgwrap.append($img);
@@ -1694,4 +1700,26 @@ function slideAd(margin) {
 		      $elem.css({position: "static"});
 		  });
   });
+}
+
+function agentHas(keyword) {
+    return navigator.userAgent.toLowerCase().search(keyword.toLowerCase()) > -1;
+}
+
+function isSafari() {
+  return (!!window.ApplePaySetupFeature || !!window.safari) &&
+    agentHas("Safari") &&
+    !agentHas("Chrome") &&
+    !agentHas("CriOS");
+}
+
+function imgur(url) {
+  var ext = ".webp";
+  if (isSafari())
+    ext = ".png";
+  return url + ext;
+}
+
+function imgur2x(url) {
+  return imgur(url + "x2");
 }
