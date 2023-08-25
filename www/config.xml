@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<widget id="no.ingebrigtsen.csid" version="1.3.16"
-	android-versionCode="103016"
+<widget id="no.ingebrigtsen.csid" version="1.3.24"
+	android-versionCode="103024"
 	xmlns="http://www.w3.org/ns/widgets"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools">
@@ -96,6 +96,10 @@
     <preference name="SplashScreen" value="splash" />
     <preference name="SplashScreenDelay" value="0" />
     <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="AndroidWindowSplashScreenAnimatedIcon"
+		value="images/splash.png" />
+    <preference name="AndroidWindowSplashScreenIconBackgroundColor"
+		value="#000000" />
     <splash src="images/splash.png" />
     
     <platform name="ios">

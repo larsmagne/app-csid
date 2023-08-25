@@ -1,9 +1,9 @@
-phoneGap = true;
 var loadTime = Date.now();
 
 $.support.cors = true;
 
 function splash() {
+  phoneGap = true;
   document.addEventListener("backbutton", function() {
     if ($("#csid-close").length) {
       $("table").show();
@@ -54,7 +54,7 @@ function splash() {
   img.src = "splash/splash" + Math.floor((Math.random() * 4 + 1)) + ".jpg";
 }
 
-var base = "http://csid.no";
+var base = "https://csid.no";
 
 function loadData() {
   $.ajax({
@@ -75,7 +75,8 @@ function loadData() {
 	loadTime = Date.now();
       };
       // If we're reloading, just display immediately.
-      if ($("#small-heading").length || device.platform == "Win32NT")
+      if (phoneGap || $("#small-heading").length
+	  || device.platform == "Win32NT")
 	display();
       else
 	waitForWebfonts("SourceSans", "bold",

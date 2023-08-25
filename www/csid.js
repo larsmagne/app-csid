@@ -208,7 +208,7 @@ function addNavigation() {
   });
 
   if (mobilep) {
-    if (phoneGap && device.platform != "Win32NT")
+    if (phoneGap)
       addLogos();
     else
       loadLogos(mobilep);
@@ -556,8 +556,7 @@ function actionEventMenu(node, venue) {
   var exportString = "";
   var logo = "logos/larger/" + fixName(venue);
   if (phoneGap) {
-    if (device.platform != "Win32NT")
-      exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
+    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
     if (! existingLogos[fixName(venue)])
       logo = "https://csid.no/logos/larger/" + fixName(venue);
@@ -607,7 +606,7 @@ function actionEventMenu(node, venue) {
 }
 
 function followLink(src) {
-  if (phoneGap && device.platform != "Android")
+  if (phoneGap)
     window.open(src, "_system", "location=no");
   else
     document.location.href = src;
@@ -836,8 +835,6 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function setHardWidths() {
-  if (device.platform != "iOS")
-    return;
   var width = $(window).width() - 100;
   $("tr").each(function(key, node) {
     $(node).children("td").first().css({
@@ -1557,7 +1554,9 @@ function hideAllSummaries() {
 function fetchEventSummary(evUrl, callback) {
   var hash = sha1(evUrl);
   var url = "summaries/" +
-	hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
+      hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
+  if (phoneGap)
+    url = "https://csid.no/" + url;
   summaryQuery = $.ajax({
     url: url,
     dataType: "text",
@@ -1715,7 +1714,7 @@ function isSafari() {
 
 function imgur(url) {
   var ext = ".webp";
-  if (isSafari())
+  if (phoneGap || isSafari())
     ext = ".png";
   return url + ext;
 }
