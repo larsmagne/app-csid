@@ -208,7 +208,7 @@ function addNavigation() {
   });
 
   if (mobilep) {
-    if (phoneGap)
+    if (phoneGap && device.platform != "Win32NT")
       addLogos();
     else
       loadLogos(mobilep);
@@ -556,7 +556,8 @@ function actionEventMenu(node, venue) {
   var exportString = "";
   var logo = "logos/larger/" + fixName(venue);
   if (phoneGap) {
-    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
+    if (device.platform != "Win32NT")
+      exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
     if (! existingLogos[fixName(venue)])
       logo = "https://csid.no/logos/larger/" + fixName(venue);
@@ -606,7 +607,7 @@ function actionEventMenu(node, venue) {
 }
 
 function followLink(src) {
-  if (phoneGap)
+  if (phoneGap && device.platform != "Android")
     window.open(src, "_system", "location=no");
   else
     document.location.href = src;
@@ -835,6 +836,8 @@ function setCookie(c_name, value, expiredays) {
 }
 
 function setHardWidths() {
+  if (device.platform != "iOS")
+    return;
   var width = $(window).width() - 100;
   $("tr").each(function(key, node) {
     $(node).children("td").first().css({
@@ -862,13 +865,13 @@ function miscMenu() {
       goingString = "<a href='#' id='going'>Display Events I'm Going To</a>";
   });
   var pgString = "";
-  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'><img src='assets/windows.png' id='windows'></div>";
+  var appString = "<div class='apps'><img src='assets/apple.png' id='apple'><img src='assets/google.png' id='google'>";
   if (phoneGap) {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
   }
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
-	   (phoneGap? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
+	   (true? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
 	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
@@ -907,10 +910,6 @@ function miscMenu() {
   $("#google").bind("click", function() {
     closeColorbox();
     document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
-  });
-  $("#windows").bind("click", function() {
-    closeColorbox();
-    document.location.href = "https://www.microsoft.com/en-us/store/apps/concerts-in-oslo/9nblggh6c4lv";
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {
@@ -985,7 +984,7 @@ function miscMenu() {
   var func = function() {
     $("table").show();
     closeColorbox();
-    $(".pika-single").remove();
+    $(".pika-wrap").remove();
     return false;
   };
   $("#csid-close").bind("click", func);
@@ -1060,7 +1059,7 @@ function chooseDate() {
       picker._d.setHours(5);
       var iso = picker._d.toISOString().substring(0, 10);
       $("table").show();
-      $(".pika-single").remove();
+      $(".pika-wrap").remove();
       var first = false;
       $("tr").each(function(key, node) {
 	var dat = node.getAttribute("date");
@@ -1077,14 +1076,17 @@ function chooseDate() {
       }
     }
   });
-  document.body.appendChild(picker.el);
-  // Ensure that the calendar is visible if the page is scrolled.
-  var box = $(".pika-single");
-  box.style.position = "fixed";
-  box.style.left = "0px";
-  box.style.top = "0px";
-  box.style.height = $(window).height() + "px";
-  box.style.width = $(window).width() + "px";
+  var wrap = document.createElement("div");
+  wrap.className = "pika-wrap";
+  wrap.style.height = window.innerHeight + "px";
+  wrap.style.width = window.innerWidth + "px";
+  wrap.appendChild(picker.el);
+  document.body.appendChild(wrap);
+  $(".pika-wrap").append("<a href='#' id='calendar-close'>Close</a>");
+  $("#calendar-close").bind("click", function() {
+    $(".pika-wrap").remove();
+    return false;
+  });
   return false;
 }
 
@@ -1553,10 +1555,8 @@ function hideAllSummaries() {
 
 function fetchEventSummary(evUrl, callback) {
   var hash = sha1(evUrl);
-  var url = "summaries/" +
-      hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
-  if (phoneGap)
-    url = "https://csid.no/" + url;
+  var url = "https://csid.no/summaries/" +
+	hash.substring(0, 3) + "/" + hash.substring(3) + "-data.json";
   summaryQuery = $.ajax({
     url: url,
     dataType: "text",
@@ -1714,7 +1714,7 @@ function isSafari() {
 
 function imgur(url) {
   var ext = ".webp";
-  if (phoneGap || isSafari())
+  if (isSafari())
     ext = ".png";
   return url + ext;
 }

@@ -1,6 +1,7 @@
 var existingLogos = { dummy: true
 , Aye_Aye_Club : true
 , Barrikaden : true
+, Becco : true
 , Belleville : true
 , Betong : true
 , Bidrobon : true
@@ -18,7 +19,9 @@ var existingLogos = { dummy: true
 , Cosmopolite : true
 , Crossroads : true
 , Cue : true
+, Dans_for_voksne : true
 , Dattera : true
+, Dunk : true
 , Elefant : true
 , Enga : true
 , Ensjx : true
@@ -27,6 +30,7 @@ var existingLogos = { dummy: true
 , Fuglen : true
 , Gamla : true
 , Godthxb : true
+, Goldie : true
 , Goon_Bar : true
 , Grxnerlxkka_brygghus : true
 , Hausmania : true
