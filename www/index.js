@@ -64,12 +64,20 @@ function loadData() {
       var div = document.createElement("div");
       div.innerHTML = data;
       $(div).find("script").remove();
-      $(div).find("head").remove();
+      // Only add the data nodes -- nothing from the head, etc.
       var display = function() {
 	var style = $('<style>html * {  font-family: SourceSans !important;  font-size: 11pt !important;}</style>');
 	$('html > head').append(style);
 	document.body.innerHTML = "";
-	document.body.appendChild(div);
+	var nodes = [];
+	for (var i = 0; i < div.childNodes.length; i++) {
+	  var n = div.childNodes[i].nodeName;
+	  if (n == "DIV" || n == "TABLE")
+	    nodes.push(div.childNodes[i]);
+	}
+	for (var i = 0; i < nodes.length; i++) {
+	  document.body.appendChild(nodes[i]);
+	}
 	addNavigation();
 	//saveCache(data);  Doesn't work on IOS.
 	loadTime = Date.now();
