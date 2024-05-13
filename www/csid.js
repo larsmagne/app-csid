@@ -862,7 +862,6 @@ function miscMenu() {
   var restoreString = "";
   if (limitedDisplay)
     restoreString = "<a href='#' id='restore'>Restore Events</a>";
-  var summaryString = "<a href='#' id='menu-summaries'>Load Summaries</a>";
   var goingString = "";
   $.map(getSettings("shows"), function(id) {
     if ($("#event-" + id).length)
@@ -883,7 +882,6 @@ function miscMenu() {
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
 	   darkString +
-	   summaryString +
 	   restoreString +
 	   goingString +
 	   pgString +
