@@ -208,7 +208,7 @@ function addNavigation() {
   });
 
   if (mobilep) {
-    if (phoneGap && device.platform != "Win32NT")
+    if (phoneGap)
       addLogos();
     else
       loadLogos(mobilep);
@@ -452,9 +452,13 @@ function sortByDistance() {
   navigator.geolocation.getCurrentPosition(function(pos) {
     homePos = [pos.coords.latitude, pos.coords.longitude];
     sortByDistanceCont();
-  }, function() {
+  }, function(err) {
     // On failure to get the position, just center somewhere.
-    colorbox("Unable to get the current location.");
+    colorbox("Unable to get the current location: " + err.message +
+	     "<div><a href='#' id='csid-close'>Close</a></div>");
+  }, {
+    enableHighAccuracy: true,
+    timeout : 5000
   });
 }
 
@@ -556,17 +560,17 @@ function actionEventMenu(node, venue) {
   var exportString = "";
   var logo = "logos/larger/" + fixName(venue);
   if (phoneGap) {
-    if (device.platform != "Win32NT")
-      exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
+    exportString = "<a href='#' id='export-event'>Export Event to Calendar</a>";
     exportString += "<a href='#' id='share-event'>Share Event</a>";
     if (! existingLogos[fixName(venue)])
       logo = "https://csid.no/logos/larger/" + fixName(venue);
   }
-  colorbox("<div id='event-summary'><table><tr><td id='event-image'><tr><td id='event-text'></table></div><a id='event-link' href='" + link +
+  colorbox("<table id='event-summary'><tr><td id='event-image'><tr><td id='event-text'><tr><td><a id='event-link' href='" + link +
 	   "'>Display the event web page</a><a href='#' id='mark-event'>" +
 	   type + "</a>" + exportString +
 	   "<a href='#' id='csid-close'>Close</a><div class='outer-venue-logo'><img src='" + imgur(logo) +
-	   "' srcset='" + imgur2x(logo) + " 2x'></div>");
+	   "' srcset='" + imgur2x(logo) + " 2x'></div></table>");
+  $("#event-summary")[0].style.height = window.innerHeight + "px";
   $("#mark-event").bind("click", function() {
     toggleShow(id, $.inArray(id, shows) == -1);
     closeColorbox();
@@ -870,11 +874,15 @@ function miscMenu() {
     pgString = "<a href='#' id='reload'>Reload Data</a>";
     appString = "";
   }
+  var darkString = "<a href='#' id='dark-mode' value='enable'>Dark Mode</a>";
+  if (getCookie("dark") == "enabled")
+    darkString = "<a href='#' id='dark-mode' value='disable'>Light Mode</a>";
   colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
 	   (true? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
 	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
 	   "</a><a href='#' id='choose-date'>Choose Date</a><a href='#' id='search'>Search</a>" +
+	   darkString +
 	   summaryString +
 	   restoreString +
 	   goingString +
@@ -910,6 +918,16 @@ function miscMenu() {
   $("#google").bind("click", function() {
     closeColorbox();
     document.location.href = "https://play.google.com/store/apps/details?id=no.ingebrigtsen.csid";
+  });
+  $("#dark-mode").bind("click", function() {
+    var css = document.getElementById("dark-css");
+    if ($("#dark-mode").attr("value") == "enable") {
+      css.disabled = false;
+      localStorage.setItem("dark", "enabled");
+    } else {
+      css.disabled = true;
+      localStorage.setItem("dark", "disabled");
+    }
   });
   $("#export-calendar").hide();
   $("#export-calendar").bind("click", function() {
@@ -1714,7 +1732,7 @@ function isSafari() {
 
 function imgur(url) {
   var ext = ".webp";
-  if (isSafari())
+  if (isSafari() || phoneGap)
     ext = ".png";
   return url + ext;
 }
