@@ -38,7 +38,7 @@ test-ios:
 	cp platforms/ios/build/device/Concerts\ in\ Oslo.ipa ~/Desktop/csid.ipa 
 
 copy:
-	rsync -av ../csid/csid.js ../csid/csid.css ../csid/pixel.png www/
+	rsync -av ../csid/csid.js ../csid/pikaday.js ../csid/csid.css ../csid/pixel.png www/
 	rsync -av ../csid/cross.png ../csid/home-cross.png www/
 	rsync -av --exclude='*.webp' ../csid/logos/larger ../csid/logos/thumb www/logos
 	./make-file-list
