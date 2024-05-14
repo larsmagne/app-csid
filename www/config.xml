@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<widget id="no.ingebrigtsen.csid" version="1.3.24"
-	android-versionCode="103024"
+<widget id="no.ingebrigtsen.csid" version="1.3.26"
+	android-versionCode="103026"
 	xmlns="http://www.w3.org/ns/widgets"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools">
@@ -68,12 +68,24 @@
     </platform>
 
     <platform name="android">
-      <icon density="ldpi" background="@color/background" foreground="images/mats-ldpi.png" />
-      <icon density="mdpi" background="@color/background" foreground="images/mats-mdpi.png" />
-      <icon density="hdpi" background="@color/background" foreground="images/mats-hdpi.png" />
-      <icon density="xhdpi" background="@color/background" foreground="images/mats-xhdpi.png" />
-      <icon density="xxhdpi" background="@color/background" foreground="images/mats-xxhdpi.png" />
-      <icon density="xxxhdpi" background="@color/background" foreground="images/mats-xxxhdpi.png" />
+      <icon density="ldpi" background="@color/background"
+	    foreground="images/mats-ldpi.png"
+	    monochrome="images/mats-ldpi.png" />
+      <icon density="mdpi" background="@color/background"
+	    foreground="images/mats-mdpi.png"
+	    monochrome="images/mats-mdpi.png" />
+      <icon density="hdpi" background="@color/background"
+	    foreground="images/mats-hdpi.png"
+	    monochrome="images/mats-hdpi.png" />
+      <icon density="xhdpi" background="@color/background"
+	    foreground="images/mats-xhdpi.png"
+	    monochrome="images/mats-xhdpi.png" />
+      <icon density="xxhdpi" background="@color/background"
+	    foreground="images/mats-xxhdpi.png"
+	    monochrome="images/mats-xxhdpi.png" />
+      <icon density="xxxhdpi" background="@color/background"
+	    foreground="images/mats-xxxhdpi.png"
+	    monochrome="images/mats-xxxhdpi.png" />
     </platform>
 
     <icon src="images/icon72.png" platform="ios" width="72" height="72" />
