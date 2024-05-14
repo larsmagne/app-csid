@@ -1,5 +1,18 @@
-# Don't install any of the OS versions of npm nodejs gradle android-sdk.
+# Don't install any of the OS versions of npm nodejs android-sdk.
 # Instead get the Android SDK from https://developer.android.com/studio/install
+#  Also need to install stuff from the sdkmanager i Android Studio --
+#    cmdline-tools ...
+#
+# Start emulator:
+# /home/larsi/Android/Sdk/emulator/emulator -avd Pixel_2_API_34 &
+# Test:
+# make copy; ANDROID_HOME=/home/larsi/Android/Sdk cordova emulate android
+
+# To test on phone:
+# Go to Goolge Play Console, choose app, testing->internal testing,
+# "create new release", upload .aab, finish, get link, use link on phone
+# to update.
+
 # Get the Cordova stuff from https://cordova.apache.org/docs/en/latest/guide/cli/
 
 # npm install -g cordova
