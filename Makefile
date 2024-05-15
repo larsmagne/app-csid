@@ -38,6 +38,12 @@ create:
 	cordova plugin add cordova-plugin-slashscreen
 	cordova plugin add cordova-plugin-androidx
 
+# To make these IOS targets work, Xcode has to be logged in to the
+# AppleID account.  So open Xcode, Settings -> Accounts -> Click
+# account and log in.
+
+# Upload with "Transporter" app, and wait until it says that the app
+# is done processing.  Then start the release on Apple Developer.
 release-ios:
 	./make-file-list
 	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
