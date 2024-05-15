@@ -93,6 +93,7 @@ var existingLogos = { dummy: true
 , Smia : true
 , Spektrum : true
 , storgata26 : true
+, Storgata_26 : true
 , Sub_Scene : true
 , Telenor_Arena : true
 , The_Villa : true
