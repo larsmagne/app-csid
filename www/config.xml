@@ -88,9 +88,9 @@
 	    monochrome="images/mats-xxxhdpi.png" />
     </platform>
 
-    <icon src="images/icon72.png" platform="ios" width="72" height="72" />
-    <icon src="images/icon57.png" platform="ios" width="57" height="57" />
-    <icon src="images/icon152.png" platform="ios" width="152" height="152" />
+    <icon src="images/icon-72.png" platform="ios" width="72" height="72" />
+    <icon src="images/icon-57.png" platform="ios" width="57" height="57" />
+    <icon src="images/icon-152.png" platform="ios" width="152" height="152" />
 
     <!-- iPhone / iPod Touch  -->
     <icon src="images/icon-60.png" platform="ios" width="60" height="60" />
