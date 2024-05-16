@@ -57,12 +57,12 @@ var existingLogos = { dummy: true
 , Leiligheten : true
 , LilleKampen : true
 , Ly : true
-, MS_Bjxrvika : true
 , Magneten : true
 , Maksitaksi : true
 , Mir : true
 , Mono : true
 , Mr_Pizza : true
+, MS_Bjxrvika : true
 , Munchmuseet : true
 , Musikkflekken : true
 , NB : true
@@ -78,8 +78,8 @@ var existingLogos = { dummy: true
 , Postkontoret : true
 , Revolver : true
 , Riksscenen : true
-, Rock_In : true
 , Rockefeller : true
+, Rock_In : true
 , Rommen_scene : true
 , Rxverstaden : true
 , Sagene : true
@@ -92,6 +92,7 @@ var existingLogos = { dummy: true
 , Smelteverket : true
 , Smia : true
 , Spektrum : true
+, storgata26 : true
 , Storgata_26 : true
 , Sub_Scene : true
 , Telenor_Arena : true
@@ -108,5 +109,4 @@ var existingLogos = { dummy: true
 , Vigeland : true
 , Vulkan : true
 , Youngs : true
-, storgata26 : true
 };
