@@ -60,6 +60,7 @@ copy:
 	rsync -av ../csid/csid.js ../csid/pikaday.js ../csid/csid.css ../csid/dark.css ../csid/pixel.png www/
 	rsync -av ../csid/cross.png ../csid/home-cross.png www/
 	rsync -av --exclude='*.webp' ../csid/logos/thumb www/logos
+	rsync -av --exclude='*.webp' ../csid/dark-logos/thumb www/dark-logos
 	./make-file-list
 	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
 
