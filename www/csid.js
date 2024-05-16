@@ -57,7 +57,11 @@ function addNavigation() {
   });
 
   var css = document.getElementById("dark-css");
-  if (! getCookie("dark") || getCookie("dark") == "disabled") {
+  if (! getCookie("dark")) {
+    var osdark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    $("#dark").prop("checked", osdark);
+    css.disabled = !osdark;
+  } else if (getCookie("dark") == "disabled") {
     css.disabled = true;
   } else {
     $("#dark").prop("checked", true);
@@ -659,10 +663,8 @@ function actionVenueMenu(name) {
     venues = "Include events from " + displayName;
 
   var logo = "logos/larger/" + fixName(name);
-  if (phoneGap) {
-    if (! existingLogos[fixName(name)])
-      logo = "https://csid.no/logos/larger/" + fixName(name);
-  }
+  if (phoneGap)
+    logo = "https://csid.no/logos/larger/" + fixName(name);
   colorbox("<div class='outer-venue-logo'><img src='" + imgur(logo) +
 	   "' srcset='" + imgur2x(logo) +
 	   " 2x'></div><a href='#' id='venue-limit'>" +
