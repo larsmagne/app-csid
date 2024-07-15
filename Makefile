@@ -15,8 +15,12 @@
 
 # Get the Cordova stuff from https://cordova.apache.org/docs/en/latest/guide/cli/
 
-# npm install -g cordova
+# Upgrading to new versions:
 
+# /home/larsi/Android/Sdk/cmdline-tools/latest/bin/sdkmanager --update
+# sudo npm install -g cordova
+# cordova platform remove android
+# cordova platform add android@latest
 
 APK=platforms/android/build/outputs/apk/android-release-unsigned.apk
 
