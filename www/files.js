@@ -14,6 +14,7 @@ var existingLogos = { dummy: true
 , Brxd_x_Sirkus : true
 , Buckleys : true
 , Bushwick : true
+, Cafe_sxr : true
 , Cafeteatret : true
 , Cappelens_forslag : true
 , Cosmopolite : true
@@ -28,6 +29,7 @@ var existingLogos = { dummy: true
 , Fisk_og_Vilt : true
 , Folk_i_Storgata : true
 , Fuglen : true
+, GSF_Skatepark : true
 , Gamla : true
 , Godthxb : true
 , Goldie : true
@@ -37,6 +39,7 @@ var existingLogos = { dummy: true
 , Henie_Onstad : true
 , Herr_Nilsen : true
 , Hvaskjer : true
+, Hxr_Hxr : true
 , Ila_fysikalske : true
 , Ingensteds : true
 , Internasjonalen : true
@@ -51,18 +54,19 @@ var existingLogos = { dummy: true
 , Khartoum : true
 , Konsertforeninga : true
 , Konserthuset : true
+, Kruttverket : true
 , Krxsset : true
 , Kulturhuset : true
 , Last_Train : true
 , Leiligheten : true
 , LilleKampen : true
 , Ly : true
+, MS_Bjxrvika : true
 , Magneten : true
 , Maksitaksi : true
 , Mir : true
 , Mono : true
 , Mr_Pizza : true
-, MS_Bjxrvika : true
 , Munchmuseet : true
 , Musikkflekken : true
 , NB : true
@@ -71,6 +75,7 @@ var existingLogos = { dummy: true
 , Olsen : true
 , Oslo_Bluesklubb : true
 , Oslo_Jazzfestival : true
+, Ostara : true
 , Parksalongen : true
 , Parkteateret : true
 , Per_px_hjxrnet : true
@@ -78,8 +83,8 @@ var existingLogos = { dummy: true
 , Postkontoret : true
 , Revolver : true
 , Riksscenen : true
-, Rockefeller : true
 , Rock_In : true
+, Rockefeller : true
 , Rommen_scene : true
 , Rxverstaden : true
 , Sagene : true
@@ -87,12 +92,12 @@ var existingLogos = { dummy: true
 , Sawol : true
 , Sentralen : true
 , Sentrum : true
+, Skatten : true
 , Skippergata : true
 , Skuret : true
 , Smelteverket : true
 , Smia : true
 , Spektrum : true
-, storgata26 : true
 , Storgata_26 : true
 , Sub_Scene : true
 , Telenor_Arena : true
@@ -109,4 +114,5 @@ var existingLogos = { dummy: true
 , Vigeland : true
 , Vulkan : true
 , Youngs : true
+, storgata26 : true
 };

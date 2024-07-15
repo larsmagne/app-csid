@@ -39,5 +39,17 @@ div#meta-hidden div.export {
 }
 
 div.margin-image-wrap {
-  background: linear-gradient(to bottom, #303030 0%, #404040 100%);
+  background: linear-gradient(to bottom, #404040 0%, black 100%);
+}
+
+div.margin-header {
+  background: #404040;
+}
+
+div.misc-heading {
+  background: #303030;
+}
+
+.checkmark {
+  background-color: #888;
 }
