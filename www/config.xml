@@ -141,7 +141,7 @@
     </platform>
 
     <platform name="android">
-      <preference name="android-minSdkVersion" value="23" />
+      <preference name="android-minSdkVersion" value="34" />
     </platform>
 
     <platform name="ios">
