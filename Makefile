@@ -51,8 +51,8 @@ create:
 release-ios:
 	./make-file-list
 	sed 's/only screen and (max-width: 600px)/only screen and (max-width: 6000px)/' < www/csid.css > a.css && mv a.css www/csid.css
-	cordova build ios --buildConfig build.json --device --release
-	cp platforms/ios/build/device/Concerts\ in\ Oslo.ipa ~/Desktop/csid.ipa 
+	PATH=/usr/bin:$(PATH) cordova build ios --buildConfig build.json --device --release
+	cp platforms/ios/build/Release-iphoneos/Concerts\ in\ Oslo.ipa ~/Desktop/csid.ipa
 
 test-ios:
 	./make-file-list

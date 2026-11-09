@@ -77,8 +77,10 @@ function addNavigation() {
     isDark = true;
   }
   
-  $("#meta-hidden").append("<div class='export'><span><a id='dshow-map'>Show today's events on a map</a></span></div>");
-  $("#dshow-map").bind("click", showMap);
+  /*
+    $("#meta-hidden").append("<div class='export'><span><a id='dshow-map'>Show today's events on a map</a></span></div>");
+    $("#dshow-map").bind("click", showMap);
+  */
   
   $("tr").each(function(key, node) {
     var name = node.getAttribute("name");
@@ -913,7 +915,7 @@ function miscMenu() {
   var darkString = "<a href='#' id='dark-mode' value='enable'>Dark Mode</a>";
   if (isDark)
     darkString = "<a href='#' id='dark-mode' value='disable'>Light Mode</a>";
-  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a><a href='#' id='show-map'>Show Today's Events on a Map</a>" +
+  colorbox("<a href='#' id='show-venues'>Choose Venues to Exclude</a>" +
 	   (true? "<a href='#' id='list-closest'>List Today's Nearest Events</a>": "") +
 	   "<a href='#' id='list-new'>List New Events</a><a href='#' id='export-calendar'>Export Calendar</a><a href='#' id='sort-method'>" +
 	   sortString +
@@ -936,7 +938,7 @@ function miscMenu() {
     return false;
   };
   $("#about").bind("click", aboutPage);
-  $("#show-map").bind("click", showMap);
+  //$("#show-map").bind("click", showMap);
   $("#list-closest").bind("click", function() {
     limitedDisplay = true;
     sortByDistance();
