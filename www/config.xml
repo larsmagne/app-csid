@@ -156,7 +156,7 @@
 	<string>This app can export concerts to your calendar.</string>
       </edit-config>
       <edit-config target="NSContactsUsageDescription" file="*-Info.plist" mode="overwrite">
-	<string>This app does not use your contacts.</string>
+	<string>This app never reads your contacts; the permission is required by the calendar component but is not used.</string>
       </edit-config>
       
       <config-file target="*-Info.plist" parent="NSCalendarsFullAccessUsageDescription">
@@ -172,7 +172,13 @@
       <config-file parent="ITSAppUsesNonExemptEncryption" mode="add" target="*-Info.plist">
 	<false/>
       </config-file>
-
+      <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="overwrite">
+	<string>This app only shares concert names and links as text. It never reads your photo library; this permission is required by the sharing component but is not used.</string>
+      </edit-config>
+      <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="overwrite">
+	<string>This app only shares concert names and links as text. It never saves anything to your photo library; this permission is required by the sharing component but is not used.</string>
+      </edit-config>
+      
       <config-file target="*-Info.plist" parent="UISupportedInterfaceOrientations~ipad">
 	<array>
 	  <string>UIInterfaceOrientationPortrait</string>
