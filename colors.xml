@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#000000</color>
-    <color name="cdv_splashscreen_background">#FFFFFF</color>
-    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

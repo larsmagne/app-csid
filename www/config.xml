@@ -68,6 +68,7 @@
     </platform>
 
     <platform name="android">
+      <resource-file src="colors.xml" target="app/src/main/res/values/colors.xml" />
       <icon density="ldpi" background="@color/background"
 	    foreground="images/mats-ldpi.png"
 	    monochrome="images/mats-ldpi.png" />
