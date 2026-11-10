@@ -76,10 +76,10 @@ function addNavigation() {
     css.disabled = false;
     isDark = true;
   }
-  
+
   /*
-    $("#meta-hidden").append("<div class='export'><span><a id='dshow-map'>Show today's events on a map</a></span></div>");
-    $("#dshow-map").bind("click", showMap);
+  $("#meta-hidden").append("<div class='export'><span><a id='dshow-map'>Show today's events on a map</a></span></div>");
+  $("#dshow-map").bind("click", showMap);
   */
   
   $("tr").each(function(key, node) {
@@ -88,7 +88,7 @@ function addNavigation() {
       return;
 
     if (! document.getElementById(name))
-      addVenue(name, deniedVenues);
+      addVenue(name, deniedVenues, $(node).find("td").last().text());
 
     var linkClick = function(e) {
       if (! e.ctrlKey) {
@@ -149,7 +149,7 @@ function addNavigation() {
   });
 
   // Add a virtual "quiz" venue.
-  addVenue("Quiz", deniedVenues);
+  addVenue("Quiz", deniedVenues, "Quiz");
 
   $(".venue-checkmark").click(function() {
     var checkbox = $(this.parentNode).find("input")[0];
@@ -260,14 +260,14 @@ function addNavigation() {
   pickAd("#rightmargin");
 }
 
-function addVenue(name, deniedVenues) {
+function addVenue(name, deniedVenues, displayName) {
   var checked = "";
   if ($.inArray(name, deniedVenues) == -1)
     checked = "checked";
   $("#selector").append("<span class='venue cbcontainer'><input type=checkbox " + 
 			checked + " id='" + name + "'><span class='checkmark venue-checkmark'></span><span id='venue-" +
 			name + "' class='venue-name'>" +
-			name.replace(/_/g, " ") + "</span></span>");
+			displayName + "</span></span>");
   $("#" + name).bind("click", function(e) {
     hideShow();
     setVenueCookie();
@@ -938,7 +938,7 @@ function miscMenu() {
     return false;
   };
   $("#about").bind("click", aboutPage);
-  //$("#show-map").bind("click", showMap);
+  $("#show-map").bind("click", showMap);
   $("#list-closest").bind("click", function() {
     limitedDisplay = true;
     sortByDistance();
